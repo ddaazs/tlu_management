@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('Hoten');
             $table->foreignId('ID_BoMon')->constrained('bomon');
             $table->string('Hamvi')->nullable();
+            $table->foreignID('ID_TK')->constrained('users');
             $table->timestamps();
         });
     }

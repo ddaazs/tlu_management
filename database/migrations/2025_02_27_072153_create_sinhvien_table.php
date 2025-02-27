@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('Nganh');
             $table->string('Khoa');
             $table->string('KhoaHoc', 10);
+            $table->foreignID('ID_TK')->constrained('users');
             $table->timestamps();
         });
     }

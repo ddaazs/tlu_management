@@ -18,8 +18,6 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('Vaitro', 100)->default('sinhvien');
-            $table->foreignId('UserID')->nullable()->constrained('sinhvien')->nullOnDelete();
-            $table->foreignId('UserID')->nullable()->constrained('giangvien')->nullOnDelete();
             $table->rememberToken();
             $table->timestamps();
         });
