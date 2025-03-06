@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('Vaitro', 100)->default('sinhvien');
+            $table->enum('role', ['giangvien', 'sinhvien', 'quantri'])->default('sinhvien');
             $table->rememberToken();
             $table->timestamps();
         });
