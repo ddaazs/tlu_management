@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('DoAn', function (Blueprint $table) {
+        Schema::create('reviews', function (Blueprint $table) {
             $table->id();
-            $table->string('Ten', 100);
-            $table->foreignId('ID_SV')->constrained('sinhvien');
-            $table->foreignId('ID_GV')->constrained('giangvien');
-            $table->string('Trangthai', 100)->default('Chưa hoàn thành');
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('DoAn');
+        Schema::dropIfExists('reviews');
     }
 };
