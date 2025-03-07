@@ -13,6 +13,11 @@ return new class extends Migration
     {
         Schema::create('reviews', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('project_id');
+            $table->unsignedBigInteger('lecturer_id'); // Sửa từ lectured_id
+            $table->integer('score');
+            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('lecturer_id')->references('id')->on('lecturers');
             $table->timestamps();
         });
     }

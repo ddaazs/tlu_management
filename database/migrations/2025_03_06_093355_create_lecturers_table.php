@@ -18,8 +18,9 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('phone_number');
             $table->string('degree');
-            $table->string('department');
-            $table->foreign('account_id')->references('id')->on('accounts');
+            $table->unsignedBigInteger('department_id')->after('id');
+            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreign('account_id')->references('id')->on('users');
             $table->timestamps();
         });
     }

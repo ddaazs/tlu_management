@@ -13,6 +13,18 @@ return new class extends Migration
     {
         Schema::create('internships', function (Blueprint $table) {
             $table->id();
+            $table->string('title');
+            $table->text('description');
+            $table->unsignedBigInteger('student_id');
+            $table->unsignedBigInteger('company_id');
+            $table->unsignedBigInteger('instructor_id');
+            $table->date('start_date');
+            $table->date('end_date');
+            $table->string('status');
+            $table->string('report_file')->nullable();
+            $table->foreign('student_id')->references('id')->on('students');
+            $table->foreign('company_id')->references('id')->on('internship_companies');
+            $table->foreign('instructor_id')->references('id')->on('lecturers');
             $table->timestamps();
         });
     }
