@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('internship_companies', function (Blueprint $table) {
+        Schema::create('internships', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('address');
-            $table->string('contact_person');
-            $table->string('email')->unique();
-            $table->string('phone_number');
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('internshipCompanies');
+        Schema::dropIfExists('internships');
     }
 };

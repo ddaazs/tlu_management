@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('gender');
             $table->string('class');
             $table->string('major');
-            $table->foreign('account_id')->references('id')->on('users');
+            $table->foreign('account_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });
     }
