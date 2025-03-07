@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('lecturers', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('account_id');
+            $table->foreign('account_id')->references('id')->on('users');
             $table->string('full_name');
             $table->string('email')->unique();
             $table->string('phone_number');
             $table->string('degree');
-            $table->unsignedBigInteger('department_id')->after('id');
+            $table->unsignedBigInteger('department_id');
             $table->foreign('department_id')->references('id')->on('departments');
-            $table->foreign('account_id')->references('id')->on('users');
             $table->timestamps();
         });
     }
