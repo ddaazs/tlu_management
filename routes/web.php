@@ -18,3 +18,7 @@ Route::get('/', function () {
 // });
 
 require __DIR__.'/auth.php';
+use App\Http\Controllers\SinhVien;
+
+Route::resource('students', SinhVien::class);
+
