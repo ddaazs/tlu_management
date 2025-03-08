@@ -19,8 +19,8 @@ class UserFactory extends Factory
         $faker = \Faker\Factory::create('vi_VN'); // Faker tiếng Việt
 
         // Chọn ngẫu nhiên vai trò
-        $role = trim($faker->randomElement(['giangvien', 'sinhvien', 'quantri']));
-        
+        $role = $faker->randomElement(['giangvien', 'sinhvien', 'quantri']);
+
         // Sinh tên đầy đủ
         $name = $faker->name();
         $nameWithoutSpaces = str_replace(' ', '', $name);
@@ -37,7 +37,7 @@ class UserFactory extends Factory
             'email' => $email,
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Mật khẩu mặc định
-            'role' => trim($role),
+            'role' => $role,
             'remember_token' => Str::random(10),
         ];
     }

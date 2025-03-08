@@ -9,7 +9,8 @@ class InternshipCompany extends Model
 {
     use HasFactory;
     protected $table = 'internshipcompanies';
-    protected $fillable = ['company_name', 'address', 'contact_person', 'email', 'phone_number'];
+
+    protected $fillable = ['company_name', 'address', 'field', 'email', 'phone_number'];
 
     public $timestamps = true;
 }
