@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Lecturer;
 use Illuminate\Support\Str;
 
+
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Lecturer>
  */
@@ -31,10 +32,10 @@ class LecturerFactory extends Factory
         return [
             'account_id' => $user->id, // Lấy ID từ user
             'full_name' => $user->name, // Lấy tên từ user
-            'email' => Str::slug($user->name, '') . '@tlu.edu.vn', // Bỏ dấu trong email
+            'email' => Str::slug($user->name, '') . uniqid() .'@tlu.edu.vn', // Bỏ dấu trong email
             'phone_number' => $faker->numerify('09########'), // Số điện thoại
             'degree' => $faker->randomElement(['Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']),
-            'department' => $faker->randomElement(['CNTT', 'Kinh tế', 'Cơ khí', 'Xây dựng']),
+            'department_id' => \App\Models\Department::inRandomOrder()->first()->id,
         ];
     }
 }

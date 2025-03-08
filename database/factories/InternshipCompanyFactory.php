@@ -12,9 +12,9 @@ class InternshipCompanyFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->company,
+            'company_name' => $this->faker->company,
             'address' => $this->faker->address,
-            'contact_person' => $this->faker->name,
+            'field' => $this->faker->word,
             'email' => $this->faker->unique()->companyEmail,
             'phone_number' => $this->faker->phoneNumber,
         ];

@@ -5,36 +5,49 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Student;
 
+
 class SinhVien extends Controller
 {
     /**
      * Hiển thị danh sách sinh viên.
      */
-    
-     public function index(Request $request)
-    {
-        $students = Student::all();
-        $query = Student::query();
-        return view('students.index', compact('students'));
+    public function search(Request $request)
+{
+    $students = Student::query(); // Khởi tạo query builder
 
-        if ($request->has('class')) {
-            $query->where('class', $request->class);
-        }
-        if ($request->has('major')) {
-            $query->where('major', $request->major);
-        }
-        if ($request->has('gender')) {
-            $query->where('gender', $request->gender);
-        }
-        if ($request->has('search')) {
-            $query->where('full_name', 'like', '%' . $request->search . '%');
-        }
+    // Nếu người dùng nhập tên
+    if ($request->filled('full_name')) {
+        $students->where('full_name', 'like', "%" . $request->full_name . "%");
+    }
 
-        $students = $query->get();
-        return response()->json($students);
+    // Nếu người dùng chọn lớp
+    if ($request->filled('class')) {
+        $students->where('class', 'like', "%" . $request->class . "%");
+    }
+
+    // Nếu người dùng chọn ngành
+    if ($request->filled('major')) {
+        $students->where('major', 'like', "%" . $request->major . "%");
+    }
+
+    // Lấy dữ liệu
+    $students = $students->get();
+
+    // Kiểm tra nếu không có sinh viên nào thì trả về thông báo
+    if ($students->isEmpty()) {
+        return redirect()->route('students.search')->with('error', 'Không tìm thấy sinh viên phù hợp.');
     }
     
+    return view('students.index', compact('students'));
+}
 
+
+     public function index(Request $request)
+    {
+        $students = Student::paginate(5);
+        return view('students.index', compact('students'));
+    }
+    
     /**
      * Hiển thị chi tiết một sinh viên.
      */
@@ -72,7 +85,7 @@ class SinhVien extends Controller
 
         $student->update($request->all());
 
-        return redirect()->route('students.index')->with('success', 'Cập nhật thành công!');
+        return redirect()->route('students.search')->with('success', 'Cập nhật thành công!');
     }
 
     /**
@@ -83,6 +96,6 @@ class SinhVien extends Controller
         $student = Student::findOrFail($id);
         $student->delete();
 
-        return redirect()->route('students.index')->with('success', 'Xóa thành công!');
+        return redirect()->route('students.search')->with('success', 'Xóa thành công!');
     }
 }

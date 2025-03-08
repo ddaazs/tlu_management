@@ -8,5 +8,5 @@
     <p><strong>Giới tính:</strong> {{ $student->gender }}</p>
     <p><strong>Lớp:</strong> {{ $student->class }}</p>
     <p><strong>Ngành:</strong> {{ $student->major }}</p>
-    <a href="{{ route('students.index') }}" class="btn btn-secondary">Quay lại</a>
+    <a href="{{ route('students.search') }}" class="btn btn-secondary">Quay lại</a>
 @endsection

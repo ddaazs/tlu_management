@@ -1,114 +1,107 @@
-
 @extends('layouts.app')
-
 @section('content')
 <div class="container">
-    <h2>Danh sách sinh viên</h2>
-    
-    <form method="GET" action="{{ route('students.index') }}" class="mb-4">
-        <div class="row">
-            <div class="col-md-3">
-                <input type="text" name="search" class="form-control" placeholder="Tìm theo tên" value="{{ request('search') }}">
-            </div>
-            <div class="col-md-2">
-                <select name="class" class="form-control">
-                    <option value="">Chọn lớp</option>
-                    <option value="A" {{ request('class') == '97' ? 'selected' : '' }}>Lớp 97</option>
-                    <option value="B" {{ request('class') == 'B' ? 'selected' : '' }}>Lớp B</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select name="major" class="form-control">
-                    <option value="">Chọn ngành</option>
-                    <option value="CNTT" {{ request('major') == 'CNTT' ? 'selected' : '' }}>CNTT</option>
-                    <option value="QTKD" {{ request('major') == 'QTKD' ? 'selected' : '' }}>QTKD</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <select name="gender" class="form-control">
-                    <option value="">Chọn giới tính</option>
-                    <option value="Nam" {{ request('gender') == 'Nam' ? 'selected' : '' }}>Nam</option>
-                    <option value="Nữ" {{ request('gender') == 'Nữ' ? 'selected' : '' }}>Nữ</option>
-                </select>
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    <h2 class="text-center mb-4"> </h2>
+
+    @if(session('error'))
+        <div class="alert alert-danger">{{ session('error') }}</div>
+    @endif
+
+    <!-- Thanh tìm kiếm -->
+    <form id="search-form" action="{{ route('students.search') }}" method="GET" class="mb-4">
+    <div class="row g-3 align-items-center">
+        <!-- Ô nhập tên sinh viên -->
+        <div class="col-md-6">
+            <div class="input-group">
+                <input type="text" id="full_name" name="full_name" class="form-control" placeholder="Nhập tên sinh viên..." value="{{ request('full_name') }}">
+                <button type="submit" class="btn btn-secondary">
+                    <i class="fas fa-search"></i> Tìm kiếm
+                </button>
             </div>
         </div>
-    </form>
+    </div>
     
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Họ và tên</th>
-                <th>Email</th>
-                <th>Số điện thoại</th>
-                <th>Lớp</th>
-                <th>Ngành</th>
-                <th>Giới tính</th>
-                <th>Thao tác</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($students as $student)
+    <div class="row g-3 align-items-center mt-2">
+        <!-- Chọn ngành -->
+        <div class="col-md-3">
+            <select id="major" name="major" class="form-control">
+                <option value="">NGÀNH</option>
+                <option value="Cơ Khí" {{ request('major') == 'Cơ Khí' ? 'selected' : '' }}>Cơ Khí</option>
+                <option value="CNTT" {{ request('major') == 'CNTT' ? 'selected' : '' }}>CNTT</option>
+                <option value="Xây dựng" {{ request('major') == 'Xây dựng' ? 'selected' : '' }}>Xây dựng</option>
+                <option value="Kinh tế" {{ request('major') == 'Kinh tế' ? 'selected' : '' }}>Kinh tế</option>
+            </select>
+        </div>
+        
+        <!-- Chọn lớp -->
+        <div class="col-md-3">
+    <select id="class" name="class" class="form-control">
+        <option value="">LỚP</option>
+        @for ($i = 1; $i <= 100; $i++)
+            <option value="Lớp {{ $i }}" {{ request('class') == "Lớp $i" ? 'selected' : '' }}>
+                Lớp {{ $i }}
+            </option>
+        @endfor
+    </select>
+</div>
+
+        
+        <!-- Nút lọc -->
+        <div class="col-md-2">
+            <button type="submit" class="btn btn-secondary w-100">
+                <i class="fas fa-filter"></i> Lọc
+            </button>
+        </div>
+    </div>
+        
+       
+    </form>
+
+    <!-- Bảng hiển thị sinh viên -->
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="thead-light">
                 <tr>
-                    <td>{{ $student->id }}</td>
-                    <td>{{ $student->full_name }}</td>
-                    <td>{{ $student->email }}</td>
-                    <td>{{ $student->phone_number }}</td>
-                    <td>{{ $student->class }}</td>
-                    <td>{{ $student->major }}</td>
-                    <td>{{ $student->gender }}</td>
-                    <td>
-                        <a href="{{ route('students.show', $student->id) }}" class="btn btn-info btn-sm">Chi tiết</a>
-                        <a href="{{ route('students.edit', $student->id) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
-                        </form>
-                    </td>
+                    <th>ID</th>
+                    <th>Mã sinh viên</th>
+                    <th>Họ và tên</th>
+                    <th>Lớp</th>
+                    <th>Thao tác</th>
                 </tr>
-            @endforeach
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                @foreach ($students as $student)
+                    <tr>
+                        <td>{{ $student->id }}</td>
+                        <td>{{ $student->account_id }}</td>
+                        <td>{{ $student->full_name }}</td>
+                        <td>{{ $student->class }}</td>
+                        <td>
+                            <a href="{{ route('students.show', $student->id) }}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ route('students.edit', $student->id) }}" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+       
+    </div>
+   
+                   
+
+
+
+ 
 </div>
 @endsection
-
-    <script>
-        function fetchStudents() {
-            let search = $('#search').val();
-            let classFilter = $('#class').val();
-            let majorFilter = $('#major').val();
-            let genderFilter = $('#gender').val();
-
-            $.ajax({
-                url: '/students',
-                method: 'GET',
-                data: { search: search, class: classFilter, major: majorFilter, gender: genderFilter },
-                success: function(response) {
-                    let rows = '';
-                    response.forEach(student => {
-                        rows += `<tr>
-                            <td>${student.id}</td>
-                            <td>${student.full_name}</td>
-                            <td>${student.email}</td>
-                            <td>${student.phone_number}</td>
-                            <td>${student.class}</td>
-                            <td>${student.major}</td>
-                            <td>${student.gender}</td>
-                        </tr>`;
-                    });
-                    $('#student-list').html(rows);
-                }
-            });
-        }
-
-        $(document).ready(function() {
-            fetchStudents();
-            $('#search, #class, #major, #gender').on('input change', fetchStudents);
-        });
-    </script>
-</body>
-</html>
