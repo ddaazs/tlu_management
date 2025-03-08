@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description');
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('company_id');
-            $table->unsignedBigInteger('instructor_id');
+            $table->unsignedBigInteger('instructor_id')->nullable();
             $table->date('start_date');
             $table->date('end_date');
             $table->string('status');
