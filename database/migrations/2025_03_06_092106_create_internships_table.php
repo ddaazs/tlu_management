@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('report_file')->nullable();
             $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('company_id')->references('id')->on('internshipCompanies');
+            $table->foreign('company_id')->references('id')->on('internship_companies');
             $table->foreign('instructor_id')->references('id')->on('lecturers');
             $table->timestamps();
         });

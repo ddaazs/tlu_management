@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('defense_schedule', function (Blueprint $table) {
+        Schema::create('defense_schedules', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('council_id'); // Giả định có bảng councils
