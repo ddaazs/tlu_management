@@ -7,6 +7,10 @@
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
 
+    @if(session('success'))
+        <div class="alert alert-success">{{ session('success') }}</div>
+    @endif
+
     <!-- Thanh tìm kiếm -->
     <form id="search-form" action="{{ route('students.search') }}" method="GET" class="mb-4">
     <div class="row g-3 align-items-center">
@@ -58,47 +62,46 @@
     </form>
 
     <!-- Bảng hiển thị sinh viên -->
-    <div class="table-responsive">
-        <table class="table table-hover">
-            <thead class="thead-light">
+    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+    <table class="table table-hover">
+        <thead class="thead-light" style="position: sticky; top: 0; background-color: white; z-index: 1000;">
+            <tr>
+                <th>ID</th>
+                <th>Mã sinh viên</th>
+                <th>Họ và tên</th>
+                <th>Lớp</th>
+                <th>Thao tác</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach ($students as $student)
                 <tr>
-                    <th>ID</th>
-                    <th>Mã sinh viên</th>
-                    <th>Họ và tên</th>
-                    <th>Lớp</th>
-                    <th>Thao tác</th>
+                    <td>{{ $student->id }}</td>
+                    <td>{{ $student->account_id }}</td>
+                    <td>{{ $student->full_name }}</td>
+                    <td>{{ $student->class }}</td>
+                    <td>
+                        <a href="{{ route('students.show', $student->id) }}" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{{ route('students.edit', $student->id) }}" class="btn btn-outline-warning btn-sm">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach ($students as $student)
-                    <tr>
-                        <td>{{ $student->id }}</td>
-                        <td>{{ $student->account_id }}</td>
-                        <td>{{ $student->full_name }}</td>
-                        <td>{{ $student->class }}</td>
-                        <td>
-                            <a href="{{ route('students.show', $student->id) }}" class="btn btn-outline-primary btn-sm">
-                                <i class="fas fa-eye"></i>
-                            </a>
-                            <a href="{{ route('students.edit', $student->id) }}" class="btn btn-outline-warning btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </a>
-                            <form action="{{ route('students.destroy', $student->id) }}" method="POST" class="d-inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-       
-    </div>
-   
-                   
+            @endforeach
+        </tbody>
+    </table>
+</div>
+
+
 
 
 
