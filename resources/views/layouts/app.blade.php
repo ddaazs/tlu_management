@@ -4,16 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Document</title>
+    <title>@yield('title', 'Đại học Thủy Lợi')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-
+    <style>
+      *{
+        
+      }
+    </style>
 </head>
 <body>
 
-    <header class="p-3 border-bottom" style="background-color: #D9D9D9">
+    <header class="p-3 border-bottom" style="background-color: #D9D9D9; width:100%">
         <div class="container-fluid">
           <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-between">
-            <a href="/" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
+            <a href="{{ route('home') }}" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
               <img class="bi me-2" width="55" height="42" role="img" aria-label="Bootstrap" src="{{ asset('images/tlu/tlu_logo.png') }}" alt="logo đhtl">
             </a>
     
@@ -34,14 +38,19 @@
                     <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8m8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1"/>
                 </svg>
-                <strong>Name Here</strong>
+                <strong>{{ Auth::user()->name }}</strong>
               </a>
               <ul class="dropdown-menu text-small">
                 <li><a class="dropdown-item" href="#">New project...</a></li>
                 <li><a class="dropdown-item" href="#">Settings</a></li>
                 <li><a class="dropdown-item" href="#">Profile</a></li>
                 <li><hr class="dropdown-divider"></li>
-                <li><a class="dropdown-item" href="#">Sign out</a></li>
+                <li>
+                  <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button class="dropdown-item" type="submit">Sign out</button>
+                  </form>
+                </li>
               </ul>
             </div>
           </div>
@@ -94,7 +103,7 @@
         </div>
       </div> --}}
 <div class="d-flex">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-dark" style="width: 280px; height: 89vh; background-color: #457B9D" id="sidebar">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-dark" style="width: 280px; height: 90vh; background-color: #457B9D" id="sidebar">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
           <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
           <span class="fs-4">Sidebar</span>
@@ -102,15 +111,15 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
           <li class="nav-item">
-            <a href="#" class="nav-link active" aria-current="page">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
-              Home
+            <a href="{{ route('users.index') }}" class="nav-link active" aria-current="page">
+              {{-- <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg> --}}
+              Tài khoản
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link text-white">
+            <a href="{{ route('lecturers.index') }}" class="nav-link text-white">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-              Dashboard
+              Giảng viên
             </a>
           </li>
           <li>
