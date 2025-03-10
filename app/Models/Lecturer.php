@@ -22,4 +22,9 @@ class Lecturer extends Model
     {
         return $this->belongsTo(User::class, 'account_id');
     }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'instructor_id');
+    }
 }

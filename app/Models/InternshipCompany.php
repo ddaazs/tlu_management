@@ -13,4 +13,9 @@ class InternshipCompany extends Model
     protected $fillable = ['company_name', 'address', 'field', 'email', 'phone_number'];
 
     public $timestamps = true;
+
+    public function internships()
+    {
+        return $this->hasMany(Internship::class, 'company_id');
+    }
 }
