@@ -9,20 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class StatisticsController extends Controller
 {
-    public function __construct()
-    {
-        // Yêu cầu đăng nhập
-        $this->middleware('auth');
-
-        // Chỉ cho phép user có role là quantri hoặc giangvien
-        $this->middleware(function ($request, $next) {
-            $user = auth()->user();
-            if (!$user || !isset($user->role) || !in_array($user->role, ['quantri', 'giangvien'])) {
-                abort(403, 'Bạn không có quyền truy cập thống kê');
-            }
-            return $next($request);
-        });
-    }
+    // Bỏ __construct để không áp dụng middleware xác thực trên backend
 
     public function index()
     {
