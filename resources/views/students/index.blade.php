@@ -57,6 +57,13 @@
             </button>
         </div>
     </div>
+
+    <!-- Nút thêm sinh viên -->
+<div class="d-flex justify-content-end mb-3">
+    <a href="{{ route('students.create') }}" class="btn btn-success">
+        <i class="fas fa-user-plus"></i> Thêm sinh viên
+    </a>
+</div>
         
        
     </form>
@@ -70,7 +77,7 @@
                 <th>Mã sinh viên</th>
                 <th>Họ và tên</th>
                 <th>Lớp</th>
-                <th>Thao tác</th>
+                <th>Hành Động</th>
             </tr>
         </thead>
         <tbody>

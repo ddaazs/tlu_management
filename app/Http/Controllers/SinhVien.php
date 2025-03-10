@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
-
+use App\Models\User;
+use Illuminate\Support\Str;
 
 class SinhVien extends Controller
 {
@@ -98,4 +99,40 @@ class SinhVien extends Controller
 
         return redirect()->route('students.search')->with('success', 'Xóa thành công!');
     }
+    
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'account_id' => 'required|exists:users,id', // Kiểm tra account_id có tồn tại trong users chưa
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:students,email',
+            'phone_number' => 'nullable|string|max:15',
+            'date_of_birth' => 'required|date',
+            'gender' => 'required|string|max:10',
+            'class' => 'required|string|max:50',
+            'major' => 'required|string|max:100',
+        ]);
+    
+        Student::create([
+            'account_id' => $request->account_id, 
+            'full_name' => $request->full_name,
+            'email' => $request->email,
+            'phone_number' => $request->phone_number,
+            'date_of_birth' => $request->date_of_birth,
+            'gender' => $request->gender,
+            'class' => $request->class,
+            'major' => $request->major,
+        ]);
+    
+        return redirect()->route('students.search')->with('success', 'Thêm sinh viên thành công!');
+    }
+
+    
+public function create()
+{
+    return view('students.create');
+}
+
+
 }
