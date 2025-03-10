@@ -2,10 +2,17 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\TopicController;
 
 Route::get('/', function () {
     return view('layouts.app');
 });
+Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
+Route::post('/topics/{id}/approve', [TopicController::class, 'approve'])->name('topics.approve');
+Route::post('/topics/{id}/reject', [TopicController::class, 'reject'])->name('topics.reject');
+Route::resource('projects', ProjectController::class);
+Route::resource('topics', TopicController::class);
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
