@@ -16,4 +16,21 @@ class Internship extends Model
         'end_date',
         'status',
     ];
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    // 1 thực tập thuộc về 1 công ty
+    public function company()
+    {
+        return $this->belongsTo(InternshipCompany::class, 'company_id');
+    }
+
+    // 1 thực tập do 1 giảng viên hướng dẫn
+    public function instructor()
+    {
+        return $this->belongsTo(Lecturer::class, 'instructor_id');
+    }
 }

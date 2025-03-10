@@ -24,7 +24,7 @@ class Project extends Model
     }
 
     // Quan hệ với Lecturer
-    public function instructor()
+    public function instructor(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Lecturer::class, 'instructor_id');
     }
