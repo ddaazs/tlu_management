@@ -6,8 +6,8 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StatisticsController;
 
-Route::get('/', function (){
-    return redirect('home');
+Route::get('/', function () {
+    return view('layouts.app');
 });
 
 // Route::resource('users', UserController::class);
@@ -28,6 +28,9 @@ Route::middleware(['auth', 'can:quantri'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('lecturers', LecturerController::class);
 });
+Route::get('/statistics', [StatisticsController::class, 'index'])
+    ->name('statistics.index');
+
 Route::get('/statistics', [StatisticsController::class, 'index'])
     ->name('statistics.index');
 
