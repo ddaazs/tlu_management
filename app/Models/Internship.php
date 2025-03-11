@@ -15,6 +15,7 @@ class Internship extends Model
         'start_date',
         'end_date',
         'status',
+        'report_file'
     ];
 
     public function student()

@@ -8,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
       *{
-        
+
       }
     </style>
 </head>
@@ -20,18 +20,18 @@
             <a href="{{ route('home') }}" class="d-flex align-items-center mb-2 mb-lg-0 link-body-emphasis text-decoration-none">
               <img class="bi me-2" width="55" height="42" role="img" aria-label="Bootstrap" src="{{ asset('images/tlu/tlu_logo.png') }}" alt="logo đhtl">
             </a>
-    
+
             {{-- <ul class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
               <li><a href="#" class="nav-link px-2 link-secondary">Overview</a></li>
               <li><a href="#" class="nav-link px-2 link-body-emphasis">Inventory</a></li>
               <li><a href="#" class="nav-link px-2 link-body-emphasis">Customers</a></li>
               <li><a href="#" class="nav-link px-2 link-body-emphasis">Products</a></li>
             </ul> --}}
-    
+
             {{-- <form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search">
               <input type="search" class="form-control" placeholder="Search..." aria-label="Search">
             </form> --}}
-    
+
             <div class="dropdown text-end">
               <a href="#" class="d-block link-body-emphasis text-decoration-none dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" class="bi bi-person-circle" viewBox="0 0 16 16">
@@ -56,7 +56,7 @@
           </div>
         </div>
       </header>
-    
+
       {{-- <div class="d-flex flex-column flex-shrink-0 bg-body-tertiary" style="width: 4.5rem;">
         <a href="/" class="d-block p-3 link-body-emphasis text-decoration-none" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
           <svg class="bi pe-none" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
@@ -129,7 +129,7 @@
             </a>
           </li>
           <li>
-            <a href="#" class="nav-link text-white">
+            <a href="{{ route('file-upload') }}" class="nav-link text-white">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
               Products
             </a>
@@ -150,7 +150,7 @@
       </div> --}}
       @yield('content')
       </div>
-      
+
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
