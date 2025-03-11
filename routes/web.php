@@ -6,9 +6,16 @@ use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\StatisticsController;
 
-Route::get('/', function () {
-    return view('layouts.app');
+Route::get('/', function (){
+    return redirect('home');
 });
+
+// Route::resource('users', UserController::class);
+// Route::resource('lecturers', LecturerController::class);
+
+Route::get('/home', function () {
+    return view('page.home');
+})->middleware(['auth', 'verified'])->name('home');
 
 // Route::resource('users', UserController::class);
 // Route::resource('lecturers', LecturerController::class);
