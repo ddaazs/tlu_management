@@ -9,8 +9,9 @@ Route::get('/', function () {
     return view('layouts.app');
 });
 Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
-Route::post('/topics/{id}/approve', [TopicController::class, 'approve'])->name('topics.approve');
-Route::post('/topics/{id}/reject', [TopicController::class, 'reject'])->name('topics.reject');
+Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
+Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
+Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
 Route::resource('projects', ProjectController::class);
 Route::resource('topics', TopicController::class);
 

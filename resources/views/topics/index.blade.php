@@ -35,6 +35,7 @@
                     <th>Tên đề tài</th>
                     <th>Mô tả</th>
                     <th>Giảng viên</th>
+                    <th>Sinh viên</th>
                     <th>Trạng thái</th>
                     <th>Thao tác</th>
                 </tr>
@@ -46,6 +47,7 @@
                     <td>{{ Str::limit($topic->title, 10, '...') }}</td>
                     <td>{{ Str::limit($topic->description, 50, '...') }}</td>
                     <td>{{ optional($topic->lecturer)->full_name ?? 'N/A' }}</td>
+                    <td>{{ optional($topic->student)->full_name ?? 'N/A' }}</td>
                     <td>
                         @if($topic->status == 'pending')
                             <span class="badge bg-warning">Chờ duyệt</span>
@@ -57,8 +59,7 @@
                     </td>
                     <td>
                         <a href="{{ route('topics.show', ['topic' => $topic->id]) }}" class="btn btn-primary btn-sm">Xem</a>
-                        <a href="#" class="btn btn-warning btn-sm">Sửa</a>
-                        <a href="#" class="btn btn-danger btn-sm">Xóa</a>
+                        <a href="{{ route('topics.edit', ['topic' => $topic->id]) }}" class="btn btn-warning btn-sm">Sửa</a>
                     </td>
                 </tr>
                 @endforeach

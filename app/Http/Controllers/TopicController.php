@@ -33,31 +33,39 @@ class TopicController extends Controller
         $topics = Topic::where('status', 'pending')->get();
         return view('topics.pending', compact('topics'));
     }
-    public function approve($id)
+    public function approve(Topic $topic)
     {
-        $topic = Topic::findOrFail($id);
-        
-        if ($topic->status !== 'Chờ duyệt') {
-            return redirect()->back()->with('error', 'Đề tài này không thể duyệt!');
-        }
+        $topic->update(['status' => 'approved']);
 
-        $topic->update(['status' => 'Đã duyệt']);
-
-        return redirect()->back()->with('success', 'Đề tài đã được duyệt!');
+        return response()->json([
+            'success' => true,
+            'message' => 'Đề tài đã được duyệt!',
+            'status' => 'approved'
+        ]);
     }
 
-    // ✅ Từ chối đề tài
-    public function reject($id)
+    public function reject(Topic $topic)
+    {
+        $topic->update(['status' => 'rejected']);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Đề tài đã bị từ chối!',
+            'status' => 'rejected'
+        ]);
+    }
+    public function changeStatus($id, $action)
     {
         $topic = Topic::findOrFail($id);
-        
-        if ($topic->status !== 'Chờ duyệt') {
-            return redirect()->back()->with('error', 'Đề tài này không thể từ chối!');
+
+        if (!in_array($action, ['approve', 'reject'])) {
+            return redirect()->route('topics.pending')->with('error', 'Hành động không hợp lệ.');
         }
 
-        $topic->update(['status' => 'Từ chối']);
+        $topic->status = ($action === 'approve') ? 'approved' : 'rejected';
+        $topic->save();
 
-        return redirect()->back()->with('error', 'Đề tài đã bị từ chối!');
+        return redirect()->route('topics.pending')->with('success', 'Cập nhật trạng thái thành công.');
     }
 
     public function create()
@@ -103,9 +111,11 @@ class TopicController extends Controller
     public function edit($id)
     {
         $topic = Topic::findOrFail($id);
-        $lecturers = Lecturer::all();
+        $lecturers = Lecturer::all(); // Lấy danh sách giảng viên
+
         return view('topics.edit', compact('topic', 'lecturers'));
     }
+
 
     /**
      * Cập nhật đề tài trong database.

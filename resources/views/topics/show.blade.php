@@ -13,6 +13,7 @@
             <p><strong>Email:</strong> {{ $topic->lecturer['email'] }}</p>
             <p><strong>Số điện thoại:</strong> {{ $topic->lecturer['phone_number'] }}</p>
             <p><strong>Học vị:</strong> {{ $topic->lecturer['degree'] }}</p>
+            <p><strong>Sinh viên đăng ký:</strong> {{ optional($topic->student)->full_name ?? 'Chưa có sinh viên' }}</p>
         </div>
 
         <p class="mt-3"><strong>Trạng thái:</strong> 
