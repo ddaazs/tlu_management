@@ -6,155 +6,91 @@ use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Project;
 use App\Models\Internship;
+use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\MajorExport;
+use App\Exports\LecturerExport;
+use App\Exports\ScoreExport;
+use App\Exports\StatusExport;
+use App\Exports\SubmissionExport;
 
-class FileUploadController extends Controller
+class StatisticsController extends Controller
 {
     /**
-     * Áp dụng middleware auth để đảm bảo chỉ có user đăng nhập mới được truy cập.
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
-     * Hiển thị trang index với danh sách dự án và báo cáo của sinh viên.
+     * Hiển thị trang index thống kê với các báo cáo và nút xuất báo cáo.
      *
      * @return \Illuminate\View\View
      */
     public function index()
     {
-        // Lấy thông tin người dùng đã đăng nhập
-        $user = auth()->user();
-        if (!$user) {
-            abort(403, 'Bạn cần đăng nhập.');
-        }
+        // Thống kê theo ngành của sinh viên
+        $byMajor = Student::select('major', DB::raw('COUNT(*) as total'))
+            ->groupBy('major')
+            ->get();
 
-        // Lấy thông tin sinh viên dựa trên account_id của user
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
+        // Thống kê theo giảng viên hướng dẫn (dựa trên dự án)
+        $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
+            ->groupBy('instructor_id')
+            ->with('instructor')
+            ->get();
 
-        // Lấy danh sách dự án và báo cáo của sinh viên
-        $projects = Project::where('student_id', $student->id)->get();
-        $internships = Internship::where('student_id', $student->id)->get();
+        // Thống kê theo điểm số đồ án
+        // Giả sử bảng reviews có cột score và liên kết với dự án (project_id) và mỗi dự án có trường student_id
+        $byScore = DB::table('reviews')
+            ->join('projects', 'reviews.project_id', '=', 'projects.id')
+            ->select('reviews.score', DB::raw('COUNT(DISTINCT projects.student_id) as total_students'))
+            ->groupBy('reviews.score')
+            ->get();
 
-        return view('file-upload.index', compact('projects', 'internships'));
+        // Thống kê trạng thái đồ án từ bảng projects
+        $byStatus = Project::select('status', DB::raw('COUNT(*) as total'))
+            ->groupBy('status')
+            ->get();
+
+        // Thống kê số file nộp
+        $projectCount = Project::whereNotNull('project_file')->count();
+        $internshipCount = Internship::whereNotNull('report_file')->count();
+
+        return view('statistics.index', compact('byMajor', 'byLecturer', 'byScore', 'byStatus', 'projectCount', 'internshipCount'));
     }
 
     /**
-     * Hiển thị trang edit cho upload file dự án.
-     *
-     * @param  int  $id  ID của bản ghi Project
-     * @return \Illuminate\View\View
+     * Xuất báo cáo thống kê theo ngành dưới dạng file Excel.
      */
-    public function editProject($id)
+    public function exportMajor()
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $project = Project::findOrFail($id);
-        if ($project->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền truy cập dự án này.');
-        }
-        return view('file-upload.edit-project', compact('project'));
+        return Excel::download(new MajorExport, 'major_report.xlsx');
     }
 
     /**
-     * Xử lý upload file cho dự án (đồ án).
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id  ID của bản ghi Project
-     * @return \Illuminate\Http\RedirectResponse
+     * Xuất báo cáo thống kê theo giảng viên hướng dẫn dưới dạng file Excel.
      */
-    public function storeProject(Request $request, $id)
+    public function exportLecturer()
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $project = Project::findOrFail($id);
-        if ($project->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền upload file cho dự án này.');
-        }
-
-        // Validate file upload: sử dụng input name 'project_file'
-        $request->validate([
-            'project_file' => 'required|file|mimes:pdf,doc,docx,zip|max:5120',
-        ]);
-
-        // Lưu file vào thư mục 'projects' trên disk 'public'
-        $path = $request->file('project_file')->store('projects', 'public');
-
-        // Cập nhật trường project_file cho dự án
-        $project->update([
-            'project_file' => $path,
-        ]);
-
-        return redirect()->route('file-upload')->with('success', 'File dự án đã được upload thành công.');
+        return Excel::download(new LecturerExport, 'lecturer_report.xlsx');
     }
 
     /**
-     * Hiển thị trang edit cho upload file báo cáo thực tập.
-     *
-     * @param  int  $id  ID của bản ghi Internship
-     * @return \Illuminate\View\View
+     * Xuất báo cáo thống kê theo điểm số đồ án dưới dạng file Excel.
      */
-    public function editInternship($id)
+    public function exportScore()
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $internship = Internship::findOrFail($id);
-        if ($internship->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền truy cập báo cáo này.');
-        }
-        return view('file-upload.edit-internship', compact('internship'));
+        return Excel::download(new ScoreExport, 'score_report.xlsx');
     }
 
     /**
-     * Xử lý upload file cho báo cáo thực tập.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id  ID của bản ghi Internship
-     * @return \Illuminate\Http\RedirectResponse
+     * Xuất báo cáo thống kê trạng thái đồ án dưới dạng file Excel.
      */
-    public function storeInternship(Request $request, $id)
+    public function exportStatus()
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $internship = Internship::findOrFail($id);
-        if ($internship->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền upload file cho báo cáo này.');
-        }
-
-        // Validate file upload: sử dụng input name 'internship_file'
-        $request->validate([
-            'internship_file' => 'required|file|mimes:pdf,doc,docx,zip|max:5120',
-        ]);
-
-        // Lưu file vào thư mục 'internships' trên disk 'public'
-        $path = $request->file('internship_file')->store('internships', 'public');
-
-        // Cập nhật trường report_file cho báo cáo thực tập
-        $internship->update([
-            'report_file' => $path,
-        ]);
-
-        return redirect()->route('file-upload')->with('success', 'Báo cáo thực tập đã được upload thành công.');
+        return Excel::download(new StatusExport, 'status_report.xlsx');
     }
 
+    /**
+     * Xuất báo cáo thống kê số file nộp dưới dạng file Excel.
+     */
+    public function exportSubmission()
+    {
+        return Excel::download(new SubmissionExport, 'submission_report.xlsx');
+    }
 }

@@ -103,45 +103,56 @@
         </div>
       </div> --}}
 <div class="d-flex">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-dark" style="width: 280px; height: 90vh; background-color: #457B9D" id="sidebar">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-dark" style="width: 280px; min-height: 90vh; background-color: #457B9D" id="sidebar">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
-          <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
-          <span class="fs-4">Sidebar</span>
+            <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
+            <span class="fs-4">Sidebar</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
-          <li class="nav-item">
-            <a href="{{ route('users.index') }}" class="nav-link active" aria-current="page">
-              {{-- <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg> --}}
-              Tài khoản
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('lecturers.index') }}" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
-              Giảng viên
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-              Orders
-            </a>
-          </li>
-          <li>
-            <a href="{{ route('file-upload') }}" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-              Products
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-              Customers
-            </a>
-          </li>
+            <li class="nav-item">
+                <a href="{{ route('users.index') }}" class="nav-link active" aria-current="page">
+                    Tài khoản
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('lecturers.index') }}" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                    Giảng viên
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                    Orders
+                </a>
+            </li>
+            <!-- Dropdown cho Quản lý sinh viên -->
+            <li class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle text-white" id="studentManagementDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                    Quản lý sinh viên
+                </a>
+                <ul class="dropdown-menu" aria-labelledby="studentManagementDropdown">
+                    <li>
+                        <a class="dropdown-item" href="{{ route('file-upload') }}">Nộp đồ án</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('observe.projects') }}">Quan sát đồ án</a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" href="{{ route('observe.internships') }}">Quan sát thực tập</a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+                    Customers
+                </a>
+            </li>
         </ul>
-      </div>
+    </div>
 
       <div class="container">
         {{-- <div class="content p-4" style="margin-left: 280px; width: calc(100% - 280px); margin-top: 56px;">

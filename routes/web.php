@@ -15,6 +15,12 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/file-upload/internship/{id}/edit', [FileUploadController::class, 'editInternship'])->name('edit.internship');
     Route::post('/file-upload/internship/{id}', [FileUploadController::class, 'storeInternship'])->name('store.internship');
+    // Danh sách đồ án với phân trang
+    Route::get('/observe-projects', [FileUploadController::class, 'reviewProjects'])->name('observe.projects');
+    // Danh sách báo cáo thực tập với phân trang
+    Route::get('/observe-internships', [FileUploadController::class, 'reviewInternships'])->name('observe.internships');
+    Route::get('/download/project/{id}', [FileUploadController::class, 'downloadProjectFile'])->name('download.project');
+    Route::get('/download/internship/{id}', [FileUploadController::class, 'downloadInternshipFile'])->name('download.internship');
 });
 
 
@@ -41,11 +47,14 @@ Route::middleware(['auth', 'can:quantri'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('lecturers', LecturerController::class);
 });
-Route::get('/statistics', [StatisticsController::class, 'index'])
-    ->name('statistics.index');
+Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
 
-Route::get('/statistics', [StatisticsController::class, 'index'])
-    ->name('statistics.index');
+// Xuất báo cáo cho từng thống kê
+Route::get('/statistics/export/major', [StatisticsController::class, 'exportMajor'])->name('export.major');
+Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportLecturer'])->name('export.lecturer');
+Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
+Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
+Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');

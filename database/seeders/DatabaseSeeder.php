@@ -72,5 +72,7 @@ class DatabaseSeeder extends Seeder
 
         // 9. Seed lịch bảo vệ (Defense Schedules)
         DefenseSchedule::factory(20)->create();
+
+        $this->call(ReviewSeeder::class);
     }
 }
