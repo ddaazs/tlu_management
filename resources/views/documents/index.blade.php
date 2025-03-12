@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container mt-5">
-        <h1>Danh Sách Tài Liệu</h1>
+        <h1>Danh Sách Tài Liệu Mẫu</h1>
 
         @if(session('success'))
             <div class="alert alert-success">{{ session('success') }}</div>
