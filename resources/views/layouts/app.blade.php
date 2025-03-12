@@ -127,11 +127,11 @@
                     Orders
                 </a>
             </li>
-            <!-- Dropdown cho Quản lý sinh viên -->
+            <!-- Dropdown cho Quản lý tài liệu -->
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle text-white" id="studentManagementDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                    Quản lý sinh viên
+                    Quản lý tài liệu
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="studentManagementDropdown">
                     <li>
@@ -146,9 +146,9 @@
                 </ul>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('statistics.index') }}" class="nav-link text-white">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-                    Customers
+                    Thống kê, xuất file
                 </a>
             </li>
         </ul>

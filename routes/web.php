@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
@@ -46,6 +47,8 @@ Route::get('/home', function () {
 Route::middleware(['auth', 'can:quantri'])->group(function () {
     Route::resource('users', UserController::class);
     Route::resource('lecturers', LecturerController::class);
+    Route::get('/import/lecturers', [ImportController::class, 'showLecturerImportForm'])->name('import.lecturers.form');
+    Route::post('/import/lecturers', [ImportController::class, 'importLecturers'])->name('import.lecturers');
 });
 Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
 
