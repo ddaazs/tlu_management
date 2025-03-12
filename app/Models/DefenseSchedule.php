@@ -23,5 +23,4 @@ class DefenseSchedule extends Model
     }
 
     // Quan hệ với Council
-
 }

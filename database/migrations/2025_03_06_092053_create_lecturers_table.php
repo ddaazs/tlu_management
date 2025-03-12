@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('phone_number');
             $table->string('degree');
             $table->unsignedBigInteger('department_id');
-            $table->foreign('department_id')->references('id')->on('departments');
+            $table->foreign('department_id')->references('id')->on('departments')->onDelete('cascade');
             $table->timestamps();
         });
     }

@@ -26,3 +26,15 @@ Route::resource('topics', TopicController::class);
 // });
 
 require __DIR__.'/auth.php';
+use App\Http\Controllers\SinhVien;
+
+Route::resource('students', SinhVien::class);
+Route::get('students', [SinhVien::class, 'search'])->name('students.search');
+Route::get('/students/create', [SinhVien::class, 'create'])->name('students.create');
+
+
+
+
+
+
+
