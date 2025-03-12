@@ -134,23 +134,37 @@
                     Quản lý tài liệu
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="studentManagementDropdown">
+                    @if(Gate::allows('sinhvien'))
                     <li>
                         <a class="dropdown-item" href="{{ route('file-upload') }}">Nộp đồ án</a>
                     </li>
+                    @endif
+                    @if(Gate::allows('giangvien') or Gate::allows('quantri'))
+                            @if(Gate::allows('sinhvien'))
                     <li>
                         <a class="dropdown-item" href="{{ route('observe.projects') }}">Quan sát đồ án</a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ route('observe.internships') }}">Quan sát thực tập</a>
                     </li>
+                            @endif
+                    <li>
+                        <a class="dropdown-item" href="{{ route('documents.create') }}">Tải lên tài liệu mẫu</a>
+                    </li>
+                    @endif
+                    <li>
+                        <a class="dropdown-item" href="{{ route('documents.index') }}">Tải xuống tài liệu mẫu</a>
+                    </li>
                 </ul>
             </li>
+            @if(Gate::allows('giangvien') or Gate::allows('quantri'))
             <li>
                 <a href="{{ route('statistics.index') }}" class="nav-link text-white">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
                     Thống kê, xuất file
                 </a>
             </li>
+            @endif
         </ul>
     </div>
 
