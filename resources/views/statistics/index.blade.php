@@ -23,7 +23,7 @@
         <!-- Thống kê theo Ngành -->
         <div class="card mb-4">
             <div class="card-header" style="background-color: #457B9D; color: #fff;">
-                Thống kê theo Ngành
+                Thống kê số lượng sinh viên theo Ngành
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -51,7 +51,7 @@
         <!-- Thống kê theo Giảng Viên -->
         <div class="card mb-4">
             <div class="card-header" style="background-color: #457B9D; color: #fff;">
-                Thống kê theo Giảng Viên Hướng Dẫn
+                Thống kê số lượng sinh viên theo Giảng Viên Hướng Dẫn
             </div>
             <div class="card-body">
                 <div class="table-responsive">
@@ -79,7 +79,7 @@
         <!-- Thống kê theo Điểm Số Đồ Án -->
         <div class="card mb-4">
             <div class="card-header" style="background-color: #457B9D; color: #fff;">
-                Thống kê theo Điểm Số Đồ Án
+                Thống kê Đồ Án theo Điểm Số
             </div>
             <div class="card-body">
                 <div class="table-responsive">

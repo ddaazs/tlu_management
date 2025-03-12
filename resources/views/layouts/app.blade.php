@@ -136,7 +136,7 @@
                 <ul class="dropdown-menu" aria-labelledby="studentManagementDropdown">
                     @if(Gate::allows('sinhvien'))
                     <li>
-                        <a class="dropdown-item" href="{{ route('file-upload') }}">Nộp đồ án</a>
+                        <a class="dropdown-item" href="{{ route('file-upload') }}">Nộp file tài liệu</a>
                     </li>
                     @endif
                     @if(Gate::allows('giangvien') or Gate::allows('quantri'))
