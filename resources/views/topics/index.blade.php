@@ -60,6 +60,10 @@
                     <td>
                         <a href="{{ route('topics.show', ['topic' => $topic->id]) }}" class="btn btn-primary btn-sm">Xem</a>
                         <a href="{{ route('topics.edit', ['topic' => $topic->id]) }}" class="btn btn-warning btn-sm">Sửa</a>
+                        <button class="btn btn-success btn-sm assign-btn" data-bs-toggle="modal" data-bs-target="#assignModal" 
+                            data-topic-id="{{ $topic->id }}">
+                            Phân công
+                        </button>
                     </td>
                 </tr>
                 @endforeach
@@ -75,4 +79,54 @@
         </nav>
     </div>
 </div>
+<!-- Modal Phân Công -->
+<div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="assignModalLabel">Phân Công Đề Tài</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ route('topics.assign') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <input type="hidden" id="topic_id" name="topic_id">
+
+                    <div class="mb-3">
+                        <label for="lecturer_id" class="form-label">Chọn Giảng Viên</label>
+                        <select class="form-select" id="lecturer_id" name="lecturer_id" required>
+                            @foreach($lecturers as $lecturer)
+                                <option value="{{ $lecturer->id }}">{{ $lecturer->full_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="student_id" class="form-label">Chọn Sinh Viên</label>
+                        <select class="form-select" id="student_id" name="student_id" required>
+                            @foreach($students as $student)
+                                <option value="{{ $student->id }}">{{ $student->full_name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-success">Lưu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll(".assign-btn").forEach(button => {
+            button.addEventListener("click", function() {
+                document.getElementById("topic_id").value = this.getAttribute("data-topic-id");
+            });
+        });
+    });
+</script>
+
 @endsection

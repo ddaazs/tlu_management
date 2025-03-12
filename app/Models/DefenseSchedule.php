@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DefenseSchedule extends Model
 {
     use HasFactory;
-    protected $table = 'defense_schedule';
+    protected $table = 'defense_schedules';
     protected $fillable = [
         'project_id',
         'council_id',

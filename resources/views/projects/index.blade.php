@@ -38,7 +38,7 @@
                 <i class="fas fa-plus"></i> Danh Sách Đề Tài
             </a>
         </div>
-       
+        
     </div>
 
     <!-- Bảng hiển thị đồ án -->

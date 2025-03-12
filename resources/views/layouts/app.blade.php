@@ -127,9 +127,9 @@
               </a>
           </li>
           <li>
-              <a href="#" class="nav-link {{ request()->is('products') ? 'active' : 'text-white' }}">
+              <a href="{{ route('internships.index') }}" class="nav-link {{ request()->is('internships') ? 'active' : 'text-white' }}">
                   <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                  Products
+                  Thực Tập
               </a>
           </li>
           <li>

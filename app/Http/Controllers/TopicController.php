@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Topic;
 use App\Models\Lecturer;
+use App\Models\Student;
+use App\Models\Project;
 use Illuminate\Http\Request;
 
 class TopicController extends Controller
@@ -12,12 +14,14 @@ class TopicController extends Controller
      * Hiển thị danh sách đề tài.
      */
     public function index()
-    {
+    {   
         $topics = Topic::with('lecturer')
                    ->orderBy('created_at', 'desc') // Sắp xếp mới nhất lên đầu
                    ->paginate(10); // Phân trang 10 đề tài mỗi trang
          // Phân trang 10 bản ghi
-        return view('topics.index', compact('topics'));
+        $lecturers = Lecturer::all();
+        $students = Student::all();
+        return view('topics.index', compact('topics','lecturers', 'students'));
     }
 
     /**
@@ -67,7 +71,28 @@ class TopicController extends Controller
 
         return redirect()->route('topics.pending')->with('success', 'Cập nhật trạng thái thành công.');
     }
+    public function assign(Request $request)
+    {
+        $request->validate([
+            'topic_id' => 'required|exists:topics,id',
+            'lecturer_id' => 'required|exists:users,id',
+            'student_id' => 'required|exists:users,id',
+        ]);
 
+        $topic = Topic::findOrFail($request->topic_id);
+
+        // Tạo mới project từ topic
+        Project::create([
+            'name' => $topic->title,
+            'description' => $topic->description,
+            'instructor_id' => $request->lecturer_id,
+            'student_id' => $request->student_id,
+            'status' => 'Đang thực hiện',
+            'topic_id' => $topic->id, // Lưu liên kết với topic
+        ]);
+
+        return redirect()->route('topics.index')->with('success', 'Phân công giảng viên hướng dẫn thành công!');
+    }
     public function create()
     {
         $lecturers = Lecturer::all(); // Lấy danh sách giảng viên
