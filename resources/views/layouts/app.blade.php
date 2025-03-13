@@ -41,14 +41,14 @@
                 <strong>{{ Auth::user()->name }}</strong>
               </a>
               <ul class="dropdown-menu text-small">
-                <li><a class="dropdown-item" href="#">New project...</a></li>
+                {{-- <li><a class="dropdown-item" href="#">New project...</a></li>
                 <li><a class="dropdown-item" href="#">Settings</a></li>
-                <li><a class="dropdown-item" href="#">Profile</a></li>
+                <li><a class="dropdown-item" href="#">Profile</a></li> --}}
                 <li><hr class="dropdown-divider"></li>
                 <li>
                   <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button class="dropdown-item" type="submit">Sign out</button>
+                    <button class="dropdown-item" type="submit">Đăng xuất</button>
                   </form>
                 </li>
               </ul>
@@ -103,17 +103,24 @@
         </div>
       </div> --}}
 <div class="d-flex">
-    <div class="d-flex flex-column flex-shrink-0 p-3 text-dark" style="width: 280px; height: 90vh; background-color: #457B9D" id="sidebar">
+    <div class="d-flex flex-column flex-shrink-0 p-3 text-dark" style="width: 280px; height: 100vh; background-color: #457B9D" id="sidebar">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none">
           <svg class="bi pe-none me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
           <span class="fs-4">Sidebar</span>
         </a>
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
+          {{-- @if(Auth::user()->role == 'quantri') --}}
           <li class="nav-item">
             <a href="{{ route('users.index') }}" class="nav-link active" aria-current="page">
-              {{-- <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg> --}}
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
               Tài khoản
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('students.search') }}" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+              Sinh viên
             </a>
           </li>
           <li>
@@ -124,22 +131,29 @@
           </li>
           <li>
             <a href="#" class="nav-link text-white">
-              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-              Orders
-            </a>
-          </li>
-          <li>
-            <a href="#" class="nav-link text-white">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-              Products
+              Đồ án
             </a>
           </li>
           <li>
             <a href="#" class="nav-link text-white">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
-              Customers
+              Thực tập
             </a>
           </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+              Tài liệu
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-link text-white">
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
+              Báo cáo
+            </a>
+          </li>
+          {{-- @endif --}}
         </ul>
       </div>
 

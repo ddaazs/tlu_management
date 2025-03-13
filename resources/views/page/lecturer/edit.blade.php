@@ -55,6 +55,15 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="status" class="form-label">Trạng thái</label>
+            <select class="form-select" id="status" name="status" required>
+                <option value="Đang làm việc" {{ $lecturer->status == 'Đang làm việc' ? 'selected' : '' }}>Đang làm việc</option>
+                <option value="Đã nghỉ việc" {{ $lecturer->status == 'Đã nghỉ việc' ? 'selected' : '' }}>Đã nghỉ việc</option>
+                <option value="Chuyển công tác" {{ $lecturer->status == 'Chuyển công tác' ? 'selected' : '' }}>Chuyển công tác</option>
+            </select>
+        </div>
+
         <!-- Nút lưu -->
         <div class="text-center">
             <button type="submit" class="btn btn-primary">Cập nhật</button>

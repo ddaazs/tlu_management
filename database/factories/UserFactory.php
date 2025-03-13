@@ -38,6 +38,7 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => Hash::make('password'), // Mật khẩu mặc định
             'role' => $role,
+            'status' => $faker->randomElement(['active', 'inactive', 'banned']),
             'remember_token' => Str::random(10),
         ];
     }

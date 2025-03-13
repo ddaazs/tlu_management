@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('degree');
             $table->unsignedBigInteger('department_id');
             $table->foreign('department_id')->references('id')->on('departments');
+            $table->enum('status', ['Đang làm việc', 'Đã nghỉ việc', 'Chuyển công tác'])->default('Đang làm việc');
             $table->timestamps();
         });
     }

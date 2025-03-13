@@ -36,6 +36,7 @@ class LecturerFactory extends Factory
             'phone_number' => $faker->numerify('09########'), // Số điện thoại
             'degree' => $faker->randomElement(['Thạc sĩ', 'Tiến sĩ', 'Phó Giáo sư', 'Giáo sư']),
             'department_id' => \App\Models\Department::inRandomOrder()->first()->id,
+            'status' => $faker->randomElement(['Đang làm việc', 'Đã nghỉ việc', 'Chuyển công tác']),
         ];
     }
 }
