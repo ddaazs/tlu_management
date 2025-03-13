@@ -22,9 +22,9 @@ return new class extends Migration
             $table->date('end_date');
             $table->string('status');
             $table->string('report_file')->nullable();
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('company_id')->references('id')->on('internship_companies');
-            $table->foreign('instructor_id')->references('id')->on('lecturers');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('company_id')->references('id')->on('internship_companies')->onDelete('cascade');
+            $table->foreign('instructor_id')->references('id')->on('lecturers')->onDelete('cascade');
             $table->timestamps();
         });
     }

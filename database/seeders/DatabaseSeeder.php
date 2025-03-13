@@ -12,6 +12,7 @@ use App\Models\Internship;
 use App\Models\Project;
 use App\Models\Job;
 use App\Models\DefenseSchedule;
+use App\Models\Topic;
 
 class DatabaseSeeder extends Seeder
 {
@@ -73,6 +74,7 @@ class DatabaseSeeder extends Seeder
         // 9. Seed lịch bảo vệ (Defense Schedules)
         DefenseSchedule::factory(20)->create();
 
-        $this->call(ReviewSeeder::class);
+        //10. Seed các đề tài (Topics)
+        Topic::factory(30)->create();
     }
 }

@@ -16,6 +16,7 @@ class Project extends Model
         'instructor_id',
         'status',
         'project_file'
+        'topic_id',
     ];
 
     // Quan hệ với Student

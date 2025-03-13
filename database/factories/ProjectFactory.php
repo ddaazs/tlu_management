@@ -25,4 +25,3 @@ class ProjectFactory extends Factory
         ];
     }
 }
-

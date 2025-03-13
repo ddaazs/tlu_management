@@ -16,8 +16,8 @@ return new class extends Migration
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('lecturer_id'); // Sửa từ lectured_id
             $table->integer('score');
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('lecturer_id')->references('id')->on('lecturers');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
+            $table->foreign('lecturer_id')->references('id')->on('lecturers')->onDelete('cascade');
             $table->timestamps();
         });
     }
