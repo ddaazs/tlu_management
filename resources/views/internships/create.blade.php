@@ -19,7 +19,7 @@
             <label>Sinh viên</label>
             <select name="student_id" class="form-control" required>
                 @foreach($students as $student)
-                    <option value="{{ $student->id }}">{{ $student->name }}</option>
+                    <option value="{{ $student->id }}">{{ $student->full_name }}</option>
                 @endforeach
             </select>
         </div>
@@ -28,7 +28,7 @@
             <label>Công ty</label>
             <select name="company_id" class="form-control" required>
                 @foreach($companies as $company)
-                    <option value="{{ $company->id }}">{{ $company->name }}</option>
+                    <option value="{{ $company->id }}">{{ $company->company_name }}</option>
                 @endforeach
             </select>
         </div>
@@ -38,7 +38,7 @@
             <select name="instructor_id" class="form-control">
                 <option value="">Không có</option>
                 @foreach($lecturers as $lecturer)
-                    <option value="{{ $lecturer->id }}">{{ $lecturer->name }}</option>
+                    <option value="{{ $lecturer->id }}">{{ $lecturer->full_name }}</option>
                 @endforeach
             </select>
         </div>
