@@ -38,8 +38,13 @@ class FileUploadController extends Controller
         }
 
         // Lấy danh sách dự án và báo cáo của sinh viên
-        $projects = Project::where('student_id', $student->id)->get();
-        $internships = Internship::where('student_id', $student->id)->get();
+        $projects = Project::where('student_id', $student->id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+        $internships = Internship::where('student_id', $student->id)
+            ->orderBy('updated_at', 'desc')
+            ->first();
+//        dd($projects, $internships);
 
         return view('file-upload.index', compact('projects', 'internships'));
     }

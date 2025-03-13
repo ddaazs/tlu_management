@@ -118,11 +118,23 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('students.search') }}" class="nav-link text-white">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                    Orders
+                    Sinh viên
                 </a>
             </li>
+{{--            <li>--}}
+{{--                <a href="{{ route('projects.index') }}" class="nav-link {{ request()->is('projects*') || request()->is('topics*') ? 'active' : 'text-white' }}">--}}
+{{--                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>--}}
+{{--                    Đồ Án--}}
+{{--                </a>--}}
+{{--            </li>--}}
+{{--            <li>--}}
+{{--                <a href="{{ route('internships.index') }}" class="nav-link {{ request()->is('internships') ? 'active' : 'text-white' }}">--}}
+{{--                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>--}}
+{{--                    Thực Tập--}}
+{{--                </a>--}}
+{{--            </li>--}}
             <!-- Dropdown cho Quản lý tài liệu -->
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle text-white" id="studentManagementDropdown" data-bs-toggle="dropdown" aria-expanded="false">

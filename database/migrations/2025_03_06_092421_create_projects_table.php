@@ -20,8 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('topic_id')->nullable(); // Đảm bảo kiểu dữ liệu khớp với bảng topics
             $table->string('status');
             $table->string('project_file')->nullable();
-            $table->foreign('student_id')->references('id')->on('students');
-            $table->foreign('instructor_id')->references('id')->on('lecturers');
             $table->timestamps();
 
             // Khóa ngoại

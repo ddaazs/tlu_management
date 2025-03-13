@@ -15,7 +15,7 @@ class Project extends Model
         'student_id',
         'instructor_id',
         'status',
-        'project_file'
+        'project_file',
         'topic_id',
     ];
 
