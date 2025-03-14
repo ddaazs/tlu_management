@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
+use App\Models\Project;
+use App\Models\Student;
+use App\Models\Lecturer;
 class ProjectController extends Controller
 {
     /**
@@ -11,7 +13,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Project::with(['student', 'lecturer']);
+        $query = Project::with(['student', 'instructor']);
 
         // Lọc theo tên hoặc trạng thái nếu có yêu cầu tìm kiếm
         if ($request->has('search')) {
@@ -39,8 +41,8 @@ class ProjectController extends Controller
     public function create()
     {
         $students = Student::all();
-        $lecturers = Lecturer::all();
-        return view('projects.create', compact('students', 'lecturers'));
+        $instructor = Lecturer::all();
+        return view('projects.create', compact('students', 'instructors'));
     }
 
     /**
@@ -66,7 +68,7 @@ class ProjectController extends Controller
      */
     public function show($id)
     {
-        $project = Project::with(['student', 'lecturer'])->findOrFail($id);
+        $project = Project::with(['student', 'instructor'])->findOrFail($id);
         return view('projects.show', compact('project'));
     }
 
@@ -77,8 +79,8 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
         $students = Student::all();
-        $lecturers = Lecturer::all();
-        return view('projects.edit', compact('project', 'students', 'lecturers'));
+        $instructors = Lecturer::all();
+        return view('projects.edit', compact('project', 'students', 'instructors'));
     }
 
     /**

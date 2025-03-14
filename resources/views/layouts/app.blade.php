@@ -107,22 +107,28 @@
         <hr>
         <ul class="nav nav-pills flex-column mb-auto">
             <li class="nav-item">
-                <a href="{{ route('users.index') }}" class="nav-link active" aria-current="page">
+                <a href="{{ route('users.index') }}" class="nav-link {{ request()->is('users*') ? 'active' : 'text-white' }}" aria-current="page">
                     Tài khoản
                 </a>
             </li>
             <li>
-                <a href="{{ route('lecturers.index') }}" class="nav-link text-white">
+                <a href="{{ route('lecturers.index') }}" class="nav-link {{ request()->is('lecturers*') ? 'active' : 'text-white' }}">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                     Giảng viên
                 </a>
             </li>
             <li>
-                <a href="#" class="nav-link text-white">
+                <a href="{{ route('projects.index') }}" class="nav-link {{ request()->is('projects*') || request()->is('topics*') ? 'active' : 'text-white' }}">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                    Orders
+                    Đồ án
                 </a>
             </li>
+            <li>
+              <a href="{{ route('internships.index') }}" class="nav-link {{ request()->is('internships*') ? 'active' : 'text-white' }}">
+                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                  Thực tập
+              </a>
+          </li>
             <!-- Dropdown cho Quản lý tài liệu -->
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle text-white" id="studentManagementDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -155,7 +161,7 @@
             </li>
             @if(Gate::allows('giangvien') or Gate::allows('quantri'))
             <li>
-                <a href="{{ route('statistics.index') }}" class="nav-link text-white">
+                <a href="{{ route('statistics.index') }}" class="nav-link {{ request()->is('statistics*') ? 'active' : 'text-white' }}">
                     <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#people-circle"></use></svg>
                     Thống kê, xuất file
                 </a>

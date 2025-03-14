@@ -92,6 +92,7 @@ class TopicController extends Controller
         ]);
 
         return redirect()->route('topics.index')->with('success', 'Phân công giảng viên hướng dẫn thành công!');
+        
     }
     public function create()
     {

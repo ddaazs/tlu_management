@@ -70,6 +70,7 @@ Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportL
 Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
 Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
 Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
+
 Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
 Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
 Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
