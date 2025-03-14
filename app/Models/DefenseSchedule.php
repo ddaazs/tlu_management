@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class DefenseSchedule extends Model
 {
     use HasFactory;
-
+    protected $table = 'defense_schedules';
     protected $fillable = [
         'project_id',
         'council_id',
@@ -23,5 +23,4 @@ class DefenseSchedule extends Model
     }
 
     // Quan hệ với Council
-   
 }

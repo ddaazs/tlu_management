@@ -36,4 +36,9 @@ class Lecturer extends Model
     public function department(){
         return $this->belongsTo(Department::class, 'department_id');
     }
+
+    public function projects()
+    {
+        return $this->hasMany(Project::class, 'instructor_id');
+    }
 }

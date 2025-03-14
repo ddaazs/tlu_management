@@ -27,5 +27,14 @@ class AuthServiceProvider extends ServiceProvider
         Gate::define('quantri', function ($user) {
             return $user->role === 'quantri';
         });
+        // Định nghĩa quyền giảng viên
+        Gate::define('giangvien', function ($user) {
+            return $user->role === 'giangvien';
+        });
+
+        // Định nghĩa quyền sinh viên
+        Gate::define('sinhvien', function ($user) {
+            return $user->role === 'sinhvien';
+        });
     }
 }

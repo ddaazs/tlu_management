@@ -65,7 +65,7 @@ class User extends Authenticatable
 
     public function students()
     {
-        return $this->hasMany(Student::class, 'account_id'); 
+        return $this->hasMany(Student::class, 'account_id');
     }
 
     public function lecturers()
