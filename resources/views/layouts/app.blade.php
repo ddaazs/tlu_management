@@ -7,8 +7,12 @@
     <title>@yield('title', 'Đại học Thủy Lợi')</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
-      *{
-        
+      li{
+        border-radius: 10px;
+      }
+      li:hover{
+        background-color: rgb(49, 159, 203); 
+
       }
     </style>
 </head>
@@ -112,7 +116,7 @@
         <ul class="nav nav-pills flex-column mb-auto">
           {{-- @if(Auth::user()->role == 'quantri') --}}
           <li class="nav-item">
-            <a href="{{ route('users.index') }}" class="nav-link active" aria-current="page">
+            <a href="{{ route('users.index') }}" class="nav-link text-white" aria-current="page">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
               Tài khoản
             </a>

@@ -7,6 +7,7 @@ use App\Models\Department;
 use App\Models\Lecturer;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 
 class LecturerController extends Controller
 {
@@ -109,7 +110,7 @@ class LecturerController extends Controller
                 'required',
                 'email',
                 'max:255',
-                'unique:users,email,' . $lecturer->id,
+                Rule::unique('users', 'email')->ignore($lecturer->account_id),
                 'regex:/^[a-zA-Z0-9._%+-]+@tlu\.edu\.vn$/',
             ],
             'phone_number' => 'required|string|max:15',
@@ -139,7 +140,8 @@ class LecturerController extends Controller
                 'email' => $request->email,
             ]);
         }
-    
+        // dd($validatedData);
+        $lecturer->update($validatedData);
         return redirect()->route('lecturers.index')->with('success', 'Cập nhật thông tin giảng viên thành công!');
     }
     
@@ -150,8 +152,11 @@ class LecturerController extends Controller
     public function destroy(Lecturer $lecturer)
     {
         $user_id = $lecturer->account_id;
-        $lecturer->resign();
-
-        return redirect()->route('lecturers.index')->with('success', 'Xóa giảng viên thành công');
+        // Cập nhật trạng thái giảng viên thành "Đã nghỉ việc"
+        $lecturer->update(['status' => 'Đã nghỉ việc']);
+        $user = User::find($user_id);
+        $user->deactivate();
+    
+        return redirect()->route('lecturers.index')->with('success', 'Giảng viên đã được vô hiệu hóa.');
     }
 }
