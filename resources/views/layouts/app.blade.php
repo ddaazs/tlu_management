@@ -148,17 +148,17 @@
                     </li>
                     @endif
                     @if(Gate::allows('giangvien') or Gate::allows('quantri'))
-                            @if(Gate::allows('sinhvien'))
+
                     <li>
                         <a class="dropdown-item" href="{{ route('observe.projects') }}">Quan sát đồ án</a>
                     </li>
                     <li>
                         <a class="dropdown-item" href="{{ route('observe.internships') }}">Quan sát thực tập</a>
                     </li>
-                            @endif
                     <li>
                         <a class="dropdown-item" href="{{ route('documents.create') }}">Tải lên tài liệu mẫu</a>
                     </li>
+
                     @endif
                     <li>
                         <a class="dropdown-item" href="{{ route('documents.index') }}">Tải xuống tài liệu mẫu</a>
