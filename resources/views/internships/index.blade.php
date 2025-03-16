@@ -58,7 +58,11 @@
                     <td>
                         <a href="{{ route('internships.show', ['internship' => $internship->id]) }}" class="btn btn-primary btn-sm">Xem</a>
                         <a href="{{ route('internships.edit', ['internship' => $internship->id]) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        
+                        <form action="{{ route('internships.destroy', ['internship' => $internship->id]) }}" method="POST" class="d-inline delete-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xoá không?')">Xoá</button>
+                        </form>
                     </td>
                 </tr>
                 @endforeach

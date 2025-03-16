@@ -58,8 +58,8 @@
                         @endif
                     </td>
                     <td>
-                        <a href="{{ route('topics.show', ['topic' => $topic->id]) }}" class="btn btn-primary btn-sm">Xem</a>
-                        <a href="{{ route('topics.edit', ['topic' => $topic->id]) }}" class="btn btn-warning btn-sm">Sửa</a>
+                        <a href="{{ route('topics.show', $topic->id) }}" class="btn btn-primary btn-sm">Xem</a>
+                        <a href="{{ route('topics.edit', $topic->id) }}" class="btn btn-warning btn-sm">Sửa</a>
                         <button class="btn btn-success btn-sm assign-btn" data-bs-toggle="modal" data-bs-target="#assignModal" 
                             data-topic-id="{{ $topic->id }}">
                             Phân công

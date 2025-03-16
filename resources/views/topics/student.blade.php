@@ -1,25 +1,32 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .table-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+</style>
 <div class="container">
-    <h2 class="mb-4">Danh Sách Đề Tài Chờ Duyệt</h2>
+    <h2 class="text-center mb-4">Danh Sách Đề Tài</h2>
     @if(session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
     @if(session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    @if($topics->isEmpty())
-        <div class="alert alert-info">Không có đề tài nào cần duyệt.</div>
-    @else
-    <div class="d-flex">
+    <div class="d-flex gap-2">
         <div class="mb-3 text-end">
-            <a href="{{ route('topics.index') }}" class="btn btn-success">
-                <i class="fas fa-plus"></i> Danh Sách Đề Tài
+            <a href="{{ route('projects.student') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Danh Sách Đồ Án
+            </a>
+        </div>
+        <div class="mb-3 text-end">
+            <a href="{{ route('topics.register') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Đăng ký đề tài
             </a>
         </div>
     </div>
-   
     <div class="table-container">
         <table class="table table-hover">
             <thead class="table-dark">
@@ -51,23 +58,23 @@
                         @endif
                     </td>
                     <td>
-                        <form action="{{ route('topics.changeStatus', ['id' => $topic->id, 'action' => 'approve']) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-success">Duyệt</button>
-                        </form>
-                        
-                        <form action="{{ route('topics.changeStatus', ['id' => $topic->id, 'action' => 'reject']) }}" method="POST" class="d-inline">
-                            @csrf
-                            <button type="submit" class="btn btn-danger">Từ chối</button>
-                        </form>
-                        
-                        
+                        <a href="{{ route('topics.show', $topic->id) }}" class="btn btn-primary btn-sm">Xem</a>
+
                     </td>
                 </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    @endif
+    
+    <div class="d-flex justify-content-center mt-4">
+        <nav aria-label="Page navigation">
+            <ul class="pagination">
+                <li class="page-item">{{ $topics->links('pagination::bootstrap-5') }}</li>
+            </ul>
+        </nav>
+    </div>
 </div>
+
+
 @endsection

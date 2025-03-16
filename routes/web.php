@@ -71,13 +71,54 @@ Route::get('/statistics/export/score', [StatisticsController::class, 'exportScor
 Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
 Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
 
-Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
-Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
-Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
-Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
-Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
-Route::resource('projects', ProjectController::class);
-Route::resource('topics', TopicController::class);
+// Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
+// Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
+// Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
+// Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
+// Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
+// Route::resource('topics', TopicController::class);
+// Route::resource('projects', ProjectController::class);
+Route::middleware(['auth'])->group(function () {
+    // 📌 Chỉ sinh viên có quyền đăng ký đề tài (Đặt lên trước /topics/{id})
+        Route::get('/topics/register', [TopicController::class, 'register'])->name('topics.register');
+        Route::post('/topics/storeStudent', [TopicController::class, 'storeStudent'])->name('topics.storeStudent');
+
+    // 📌 Hiển thị danh sách đề tài
+    Route::get('/topics', [TopicController::class, 'index'])->name('topics.index');
+    Route::get('/topics/student', [TopicController::class, 'student'])->name('topics.student');
+
+    // 📌 Hiển thị một đề tài cụ thể (Chỉ nhận ID là số)
+    Route::get('/topics/{id}', [TopicController::class, 'show'])
+        ->where('id', '[0-9]+') // Chỉ nhận số, tránh trùng với "register"
+        ->name('topics.show');
+
+    // 📌 Danh sách đề tài chờ duyệt
+    Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
+
+    // 📌 Duyệt hoặc từ chối đề tài (Quản trị viên)
+    Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
+    Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
+    Route::post('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
+
+    // 📌 Chỉ giảng viên & quản trị viên có quyền tạo đề tài
+        Route::get('/topics/create', [TopicController::class, 'create'])->name('topics.create');
+        Route::post('/topics', [TopicController::class, 'store'])->name('topics.store');
+
+    // 📌 Chỉ giảng viên & quản trị viên có thể chỉnh sửa & xóa đề tài
+        Route::get('/topics/{id}/edit', [TopicController::class, 'edit'])->name('topics.edit');
+        Route::put('/topics/{id}', [TopicController::class, 'update'])->name('topics.update');
+        Route::delete('/topics/{id}', [TopicController::class, 'destroy'])->name('topics.destroy');
+
+    // 📌 Phân công giảng viên hướng dẫn (chỉ quản trị viên)
+        Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
+});
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index'); // Giảng viên / Quản trị
+    Route::get('/projects/student', [ProjectController::class, 'student'])->name('projects.student'); // Sinh viên
+    
+});
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -98,10 +139,27 @@ Route::get('/students/create', [SinhVien::class, 'create'])->name('students.crea
 
 use App\Http\Controllers\InternshipController;
 
-Route::resource('internships', InternshipController::class);
+Route::middleware(['auth'])->group(function () {
+    // 🔹 Danh sách thực tập (Dành cho giảng viên & quản trị)
+    Route::get('/internships', [InternshipController::class, 'index'])->name('internships.index');
 
+    // 🔹 Chức năng cho Sinh viên
+    Route::prefix('internships')->group(function () {
+        Route::get('/student', [InternshipController::class, 'studentIndex'])->name('internships.studentIndex');
+        Route::get('/register', [InternshipController::class, 'studentCreate'])->name('internships.studentCreate');
+        Route::post('/register', [InternshipController::class, 'studentStore'])->name('internships.studentStore');
+    });
 
+    // 🔹 Chức năng cho Giảng viên & Quản trị viên
+    Route::get('/internships/create', [InternshipController::class, 'create'])->name('internships.create');
+    Route::post('/internships', [InternshipController::class, 'store'])->name('internships.store');
+    Route::get('/internships/{internship}/edit', [InternshipController::class, 'edit'])->name('internships.edit');
+    Route::put('/internships/{internship}', [InternshipController::class, 'update'])->name('internships.update');
+    Route::delete('/internships/{internship}', [InternshipController::class, 'destroy'])->name('internships.destroy');
 
+    // 🔹 Di chuyển route chi tiết xuống cuối
+    Route::get('/internships/{internship}', [InternshipController::class, 'show'])->name('internships.show');
+});
 
 
 

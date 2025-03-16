@@ -117,18 +117,30 @@
                     Giảng viên
                 </a>
             </li>
+
             <li>
-                <a href="{{ route('projects.index') }}" class="nav-link {{ request()->is('projects*') || request()->is('topics*') ? 'active' : 'text-white' }}">
-                    <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                    Đồ án
-                </a>
+              @if(Gate::allows('giangvien') or Gate::allows('quantri'))
+                  <a href="{{ route('projects.index') }}"  class="nav-link {{ request()->is('projects*') || request()->is('topics*') ? 'active' : 'text-white' }}">
+              @elseif(Gate::allows('sinhvien'))
+                  <a href="{{ route('projects.student') }}" class="nav-link {{ request()->is('projects/student') || request()->is('topics*') ? 'active' : 'text-white' }}">
+              @endif
+                        <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                        Đồ án
+                    </a>
             </li>
+          
+
             <li>
-              <a href="{{ route('internships.index') }}" class="nav-link {{ request()->is('internships*') ? 'active' : 'text-white' }}">
-                  <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                  Thực tập
+              @if(Gate::allows('giangvien') or Gate::allows('quantri'))
+                  <a href="{{ route('internships.index') }}" class="nav-link {{ request()->is('internships*') ? 'active' : 'text-white' }}">
+              @elseif(Gate::allows('sinhvien'))
+                  <a href="{{ route('internships.studentIndex') }}" class="nav-link {{ request()->is('internships/student') ? 'active' : 'text-white' }}">
+              @endif
+              <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+              Thực tập
               </a>
-          </li>
+
+            </li>
             <!-- Dropdown cho Quản lý tài liệu -->
             <li class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle text-white" id="studentManagementDropdown" data-bs-toggle="dropdown" aria-expanded="false">

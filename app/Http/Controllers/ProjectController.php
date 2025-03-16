@@ -33,6 +33,31 @@ class ProjectController extends Controller
 
         return view('projects.index', compact('projects'));
     }
+    public function student(Request $request) // Thêm Request $request
+    {
+        $query = Project::with(['student', 'instructor']);
+
+        // Lọc theo tên hoặc trạng thái nếu có yêu cầu tìm kiếm
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Áp dụng phân trang (10 bản ghi trên mỗi trang)
+        $projects = $query->paginate(10);
+
+        // Kiểm tra nếu là request AJAX thì trả về JSON (hỗ trợ tìm kiếm động)
+        if ($request->ajax()) {
+            return response()->json($projects);
+        }
+
+        return view('projects.student', compact('projects'));
+    }
+
+
+
 
 
     /**

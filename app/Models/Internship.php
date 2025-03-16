@@ -10,11 +10,15 @@ class Internship extends Model
     use HasFactory;
 
     protected $fillable = [
+        'title',         // 🆕 Thêm tiêu đề
+        'description',   // 🆕 Thêm mô tả
         'student_id',
         'company_id',
+        'instructor_id', // 🆕 Thêm giảng viên hướng dẫn
         'start_date',
         'end_date',
         'status',
+        'report_file',
     ];
     public function student()
     {
