@@ -95,7 +95,7 @@ class SinhVien extends Controller
 
         $student->update($request->all());
 
-        return redirect()->route('.students.search')->with('success', 'Cập nhật thành công!');
+        return redirect()->route('students.search')->with('success', 'Cập nhật thành công!');
     }
 
     /**

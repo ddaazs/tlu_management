@@ -44,7 +44,7 @@
 
 <div class="mb-3">
     <label class="form-label">Số điện thoại:</label>
-    <input type="text" name="phone_number" class="form-control" value="{{ old('phone_number') }}" pattern="^0[0-9]{9}$" title="Số điện thoại phải có 10 chữ số và bắt đầu bằng 0">
+    <input type="text" name="phone_number" class="form-control" value="{{ old('phone_number') }}" pattern="^0[0-9]{9}$" title="Số điện thoại không được vượt quá 15 kí tự">
     @if ($errors->has('phone_number'))
         <div class="text-danger">{{ $errors->first('phone_number') }}</div>
     @endif
