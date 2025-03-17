@@ -187,4 +187,23 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Lấy tất cả các phần tử alert
+        const alerts = document.querySelectorAll('.alert');
+        if (alerts) {
+            // Sau 5 giây, ẩn từng alert với hiệu ứng fadeOut
+            setTimeout(() => {
+                alerts.forEach(alert => {
+                    // Sử dụng CSS transition để tạo hiệu ứng fade-out
+                    alert.style.transition = "opacity 0.5s ease-out";
+                    alert.style.opacity = "0";
+                    setTimeout(() => {
+                        alert.style.display = "none";
+                    }, 500); // sau 0.5s hiệu ứng fade-out
+                });
+            }, 5000); // 5000 ms = 5 giây
+        }
+    });
+</script>
 </html>

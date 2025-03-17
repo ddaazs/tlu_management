@@ -7,19 +7,19 @@
             <h4 class="mb-0">Chỉnh sửa sinh viên</h4>
         </div>
         <div class="card-body">
-            @if ($errors->any())
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-            
+
             <form action="{{ route('students.update', $student->id) }}" method="POST">
                 @csrf
                 @method('PUT')
+                @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
                 <div class="mb-3">
                     <label class="form-label">Họ và tên:</label>
