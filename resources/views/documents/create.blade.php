@@ -31,7 +31,7 @@
             </div>
 
             <div class="mb-3">
-                <label for="file" class="form-label">Chọn file (pdf, doc, docx, tối đa 20MB):</label>
+                <label for="file" class="form-label">Chọn file (pdf, doc, docx, zip tối đa 20MB):</label>
                 <input type="file" name="file" id="file" class="form-control" required>
             </div>
 

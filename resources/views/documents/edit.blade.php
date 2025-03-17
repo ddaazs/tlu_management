@@ -36,7 +36,7 @@
 
             <!-- File Field -->
             <div class="mb-3">
-                <label for="file" class="form-label">Chọn file (pdf, doc, docx, tối đa 20MB):</label>
+                <label for="file" class="form-label">Chọn file (pdf, doc, docx, zip tối đa 20MB):</label>
                 <input type="file" name="file" id="file" class="form-control">
                 @if($document->file)
                     <p class="mt-2">Tệp hiện tại: <a href="{{ route('documents.download', $document->id) }}" target="_blank">Tải xuống</a></p>

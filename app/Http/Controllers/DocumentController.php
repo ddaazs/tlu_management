@@ -24,7 +24,7 @@ class DocumentController extends Controller
         $request->validate([
             'title' => 'required|string|max:255|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
             'description' => 'nullable|string|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
-            'file' => 'required|file|mimes:pdf,doc,docx|max:20480'
+            'file' => 'required|file|mimes:pdf,doc,docx,zip|max:20480'
         ], [
             'title.required' => 'Tiêu đề không được chỉ bao gồm khoảng trắng!',
             'title.not_regex' => 'Tiêu đề không được chỉ chứa khoảng trắng.',
@@ -74,7 +74,7 @@ class DocumentController extends Controller
         $request->validate([
             'title' => 'required|string|max:255|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
             'description' => 'nullable|string|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
-            'file' => 'nullable|file|mimes:pdf,doc,docx|max:20480'
+            'file' => 'nullable|file|mimes:pdf,doc,docx,zip|max:20480'
         ], [
             'title.required' => 'Tiêu đề không được để khoảng trắng!',
             'title.not_regex' => 'Tiêu đề không được chỉ chứa khoảng trắng.',
