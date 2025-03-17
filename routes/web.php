@@ -8,10 +8,11 @@ use App\Http\Controllers\StudentController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TopicController;
-
+use App\Http\Controllers\InternshipCompanyController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\DocumentController;
+use Database\Seeders\TopicSeeder;
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/file-upload', [FileUploadController::class, 'index'])->name('file-upload');
@@ -39,46 +40,79 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-
 Route::get('/', function (){
     return redirect('home');
 });
-// Route::resource('users', UserController::class);
-// Route::resource('lecturers', LecturerController::class);
 
 Route::get('/home', function () {
     return view('page.home');
 })->middleware(['auth', 'verified'])->name('home');
 
-// Route::resource('users', UserController::class);
-// Route::resource('lecturers', LecturerController::class);
-
 Route::get('/home', function () {
     return view('page.home');
 })->middleware(['auth', 'verified'])->name('home');
 
+//Route cho quantri(admin)
 Route::middleware(['auth', 'can:quantri'])->group(function () {
     Route::resource('users', UserController::class);
     Route::patch('/users/{user}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
     Route::resource('lecturers', LecturerController::class);
     Route::get('/import/lecturers', [ImportController::class, 'showLecturerImportForm'])->name('import.lecturers.form');
     Route::post('/import/lecturers', [ImportController::class, 'importLecturers'])->name('import.lecturers');
+    Route::resource('internships', InternshipController::class);
+    Route::resource('topics', TopicController::class);
+    Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
+    Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
+    Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
+    Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
+    Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
+    Route::resource('statistics', StatisticsController::class);
+    Route::resource('projects', ProjectController::class);
+    Route::get('/statistics/export/major', [StatisticsController::class, 'exportMajor'])->name('export.major');
+    Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportLecturer'])->name('export.lecturer');
+    Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
+    Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
+    Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
+    Route::resource('documents', DocumentController::class);
 });
-Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
 
-// Xuất báo cáo cho từng thống kê
-Route::get('/statistics/export/major', [StatisticsController::class, 'exportMajor'])->name('export.major');
-Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportLecturer'])->name('export.lecturer');
-Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
-Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
-Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
-Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
-Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
-Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
-Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
-Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
-Route::resource('projects', ProjectController::class);
-Route::resource('topics', TopicController::class);
+//Route cho giang vien
+Route::middleware(['auth', 'can:giangvien'])->group(function () {
+    Route::resource('students', StudentController::class);
+    Route::get('students',[StudentController::class, 'search'])->name('students.search');
+    Route::resource('documents', DocumentController::class);
+    Route::resource('internships', InternshipController::class);
+    Route::resource('topics', TopicController::class);
+    Route::resource('statistics', StatisticsController::class);
+    
+});
+
+//Route cho sinh vien
+Route::middleware(['auth', 'can:sinhvien'])->group(function () {
+    Route::resource('students', StudentController::class);
+    Route::resource('documents', DocumentController::class);
+
+    // Route::get('projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
+    Route::resource('projects', ProjectController::class);
+});
+
+
+
+// Route::get('/statistics', [StatisticsController::class, 'index'])->name('statistics.index');
+
+// // Xuất báo cáo cho từng thống kê
+// Route::get('/statistics/export/major', [StatisticsController::class, 'exportMajor'])->name('export.major');
+// Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportLecturer'])->name('export.lecturer');
+// Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
+// Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
+// Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
+// Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
+// Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
+// Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
+// Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
+// Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
+// Route::resource('projects', ProjectController::class);
+// Route::resource('topics', TopicController::class);
 
 // Route::get('/dashboard', function () {
 //     return view('dashboard');
@@ -92,12 +126,6 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__.'/auth.php';
-use App\Http\Controllers\SinhVien;
-
-Route::resource('students', SinhVien::class);
-Route::get('students', [SinhVien::class, 'search'])->name('students.search');
-Route::get('/students/create', [SinhVien::class, 'create'])->name('students.create');
-
 
 
 use App\Http\Controllers\InternshipController;

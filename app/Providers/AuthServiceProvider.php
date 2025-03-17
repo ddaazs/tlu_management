@@ -29,7 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         });
         // Định nghĩa quyền giảng viên
         Gate::define('giangvien', function ($user) {
-            return $user->role === 'giangvien';
+            return $user->role === 'giangvien' || $user->role === 'quantri';
         });
 
         // Định nghĩa quyền sinh viên

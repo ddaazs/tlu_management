@@ -7,6 +7,8 @@ use App\Models\Project;
 use App\Models\Student;
 use Illuminate\Http\Request;
 
+use function PHPUnit\Framework\isEmpty;
+
 class ProjectController extends Controller
 {
     /**
@@ -67,9 +69,9 @@ class ProjectController extends Controller
     /**
      * Hiển thị chi tiết một đồ án
      */
-    public function show($id)
+    public function show(Student $student)
     {
-        $project = Project::with(['student', 'lecturer'])->findOrFail($id);
+        $project = Project::with(['student', 'lecturer'])->findOrFail($student);
         return view('projects.show', compact('project'));
     }
 

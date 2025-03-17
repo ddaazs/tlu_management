@@ -13,6 +13,7 @@ use App\Exports\LecturerExport;
 use App\Exports\ScoreExport;
 use App\Exports\StatusExport;
 use App\Exports\SubmissionExport;
+use Illuminate\View\View;
 
 class StatisticsController extends Controller
 {

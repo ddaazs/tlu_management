@@ -7,7 +7,7 @@
             </a>
           </li> --}}
           <li>
-            <a href="{{ route('topics.index') }}" class="nav-link {{ request()->is('projects*') ? 'active' : 'text-white' }}">
+            <a href="{{ route('projects.index') }}" class="nav-link {{ request()->is('projects*') ? 'active' : 'text-white' }}">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
               Đồ án
             </a>
