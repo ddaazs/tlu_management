@@ -80,8 +80,9 @@ Route::get('/statistics/export/submission', [StatisticsController::class, 'expor
 // Route::resource('projects', ProjectController::class);
 Route::middleware(['auth'])->group(function () {
     // 📌 Chỉ sinh viên có quyền đăng ký đề tài (Đặt lên trước /topics/{id})
-        Route::get('/topics/register', [TopicController::class, 'register'])->name('topics.register');
-        Route::post('/topics/storeStudent', [TopicController::class, 'storeStudent'])->name('topics.storeStudent');
+    Route::get('/topics/register', [TopicController::class, 'register'])->name('topics.register');
+    Route::post('/topics/register/{id}', [TopicController::class, 'register_1'])->name('topics.register.submit');
+    Route::post('/topics/storeStudent', [TopicController::class, 'storeStudent'])->name('topics.storeStudent');
 
     // 📌 Hiển thị danh sách đề tài
     Route::get('/topics', [TopicController::class, 'index'])->name('topics.index');
@@ -110,6 +111,14 @@ Route::middleware(['auth'])->group(function () {
         Route::delete('/topics/{id}', [TopicController::class, 'destroy'])->name('topics.destroy');
 
     // 📌 Phân công giảng viên hướng dẫn (chỉ quản trị viên)
+        Route::get('/topics/{id}/details', function($id) {
+            $topic = \App\Models\Topic::with(['lecturer', 'student'])->findOrFail($id);
+            return response()->json([
+                'lecturer_id' => $topic->lecturer ? $topic->lecturer->id : null,
+                'student_id' => $topic->student ? $topic->student->id : null,
+            ]);
+        });
+    
         Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
 });
 

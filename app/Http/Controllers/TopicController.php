@@ -23,12 +23,27 @@ class TopicController extends Controller
     }
 
     public function student()
-    {   
-        $topics = Topic::with('lecturer')->orderBy('created_at', 'desc')->paginate(10);
-        $lecturers = Lecturer::all();
-        $students = Student::all();
-        return view('topics.student', compact('topics', 'lecturers', 'students'));
+    {
+        // Lấy thông tin sinh viên hiện tại
+        $student = Student::where('account_id', auth()->id())->first();
+
+        // Nếu không tìm thấy sinh viên, báo lỗi
+        if (!$student) {
+            return abort(404, 'Không tìm thấy thông tin sinh viên');
+        }   
+
+        // Lấy đề tài sinh viên đã đăng ký (nếu có)
+        $registeredTopic = Topic::where('student_id', $student->id)->first();
+
+        // Lấy danh sách các đề tài chưa có sinh viên đăng ký
+        $topics = Topic::with('lecturer')
+                    ->whereNull('student_id')  // Chỉ lấy đề tài chưa có sinh viên
+                    ->orderBy('created_at', 'desc')
+                    ->paginate(10);
+
+        return view('topics.student', compact('topics', 'registeredTopic'));
     }
+
 
     public function show($id)
     {
@@ -99,6 +114,10 @@ class TopicController extends Controller
         ]);
 
         $topic = Topic::findOrFail($request->topic_id);
+         // Kiểm tra trạng thái của đề tài
+        if ($topic->status !== 'approved') {
+            return redirect()->route('topics.index')->with('error', 'Chỉ có thể phân công các đề tài đã được duyệt.');
+        }
 
         Project::create([
             'name' => $topic->title,
@@ -155,22 +174,64 @@ class TopicController extends Controller
             abort(403, 'Chỉ sinh viên mới có thể đăng ký đề tài.');
         }
 
+        // Lấy sinh viên hiện tại từ bảng students
+        $student = Student::where('account_id', auth()->id())->first();
+
+        // Kiểm tra nếu sinh viên đã có đề tài
+        if (!$student) {
+            return back()->with('error', 'Không tìm thấy thông tin sinh viên.');
+        }
+
+        $existingTopic = Topic::where('student_id', $student->id)->first();
+        if ($existingTopic) {
+            return back()->with('error', 'Bạn đã đăng ký đề tài. Không thể đăng ký thêm.');
+        }
+
+        // Validate dữ liệu nhập vào
         $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'lecturer_id' => 'required|exists:lecturers,id',
         ]);
 
-        $topic = Topic::create([
+        // Tạo mới đề tài
+        Topic::create([
             'title' => $validatedData['title'],
             'description' => $validatedData['description'],
             'lecturer_id' => $validatedData['lecturer_id'],
-            'student_id' => auth()->user()->id,
+            'student_id' => $student->id,
             'status' => 'pending',
         ]);
 
         return redirect()->route('topics.student')->with('success', 'Đăng ký đề tài thành công!');
     }
+
+
+    public function register_1(Request $request, $id)
+    {
+        // Lấy thông tin sinh viên hiện tại
+        $student = Student::where('account_id', auth()->id())->first();
+
+        // Kiểm tra nếu sinh viên đã có đề tài rồi
+        if (Topic::where('student_id', $student->id)->exists()) {
+            return redirect()->back()->with('error', 'Bạn đã đăng ký một đề tài khác.');
+        }
+
+        // Lấy đề tài cần đăng ký
+        $topic = Topic::findOrFail($id);
+
+        // Kiểm tra xem đề tài đã có sinh viên chưa
+        if ($topic->student_id) {
+            return redirect()->back()->with('error', 'Đề tài này đã có sinh viên đăng ký.');
+        }
+
+        // Cập nhật đề tài với sinh viên đăng ký
+        $topic->student_id = $student->id;
+        $topic->save();
+
+        return redirect()->back()->with('success', 'Đăng ký đề tài thành công!');
+    }
+
 
     public function edit($id)
     {
