@@ -94,8 +94,8 @@ class FileUploadController extends Controller
         $request->validate([
             'project_file' => 'required|file|mimes:pdf,doc,docx,zip|max:20480',
         ], [
-            'file.mimes' => 'Tệp phải có định dạng: pdf, doc hoặc docx.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 5MB.',
+            'file.mimes' => 'Tệp phải có định dạng: pdf, doc, docx hoặc zip.',
+            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
         ]);
 
         // Lưu file vào thư mục 'projects' trên disk 'public'
@@ -154,8 +154,8 @@ class FileUploadController extends Controller
         $request->validate([
             'internship_file' => 'required|file|mimes:pdf,doc,docx,zip|max:20480',
         ], [
-            'file.mimes' => 'Tệp phải có định dạng: pdf, doc hoặc docx.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 5MB.',
+            'file.mimes' => 'Tệp phải có định dạng: pdf, doc, docx hoặc zip.',
+            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
         ]);
 
         // Lưu file vào thư mục 'internships' trên disk 'public'
