@@ -70,6 +70,16 @@ Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportL
 Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
 Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
 Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
+Route::get('/statistics/export/major-pdf', [StatisticsController::class, 'exportMajorPdf'])->name('export.major.pdf');
+Route::get('/statistics/export/lecturer-pdf', [StatisticsController::class, 'exportLecturerPdf'])->name('export.lecturer.pdf');
+Route::get('/statistics/export/score-pdf', [StatisticsController::class, 'exportScorePdf'])->name('export.score.pdf');
+Route::get('/statistics/export/status-pdf', [StatisticsController::class, 'exportStatusPdf'])->name('export.status.pdf');
+Route::get('/statistics/export/submission-pdf', [StatisticsController::class, 'exportSubmissionPdf'])->name('export.submission.pdf');
+Route::get('/statistics/view/major-pdf', [StatisticsController::class, 'viewMajorPdf'])->name('view.major.pdf');
+Route::get('/statistics/view/lecturer-pdf', [StatisticsController::class, 'viewLecturerPdf'])->name('view.lecturer.pdf');
+Route::get('/statistics/view/score-pdf', [StatisticsController::class, 'viewScorePdf'])->name('view.score.pdf');
+Route::get('/statistics/view/status-pdf', [StatisticsController::class, 'viewStatusPdf'])->name('view.status.pdf');
+Route::get('/statistics/view/submission-pdf', [StatisticsController::class, 'viewSubmissionPdf'])->name('view.submission.pdf');
 Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
 Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
 Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
