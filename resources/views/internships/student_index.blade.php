@@ -1,6 +1,12 @@
 @extends('layouts.app')
 
 @section('content')
+<style>
+    .custom-pagination .page-item {
+        margin: 0 5px; /* Tạo khoảng cách ngang giữa các nút */
+    }
+    
+</style>
 <div class="container">
     <h2>Danh sách Thực tập</h2>
     
@@ -44,9 +50,10 @@
             @endforeach
         </tbody>
     </table>
-    <div class="d-flex justify-content-center mt-4">
+    <div class="d-flex flex-column align-items-center mt-4">
+        
         <nav aria-label="Page navigation">
-            <ul class="pagination">
+            <ul class="pagination custom-pagination">
                 <li class="page-item">{{ $internships->links('pagination::bootstrap-5') }}</li>
             </ul>
         </nav>

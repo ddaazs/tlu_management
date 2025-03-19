@@ -61,7 +61,7 @@ class InternshipController extends Controller
             'student_id' => 'required|exists:students,id',
             'company_id' => 'required|exists:internship_companies,id',
             'instructor_id' => 'nullable|exists:lecturers,id',
-            'start_date' => 'required|date',
+            'start_date' => ['required', 'date', 'after_or_equal:today'], // Đảm bảo ngày bắt đầu >= hôm nay
             'end_date' => 'required|date|after:start_date',
             'status' => 'required|string',
             'report_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
@@ -111,7 +111,7 @@ class InternshipController extends Controller
             'student_id' => 'required|exists:students,id',
             'company_id' => 'required|exists:internship_companies,id',
             'instructor_id' => 'nullable|exists:lecturers,id',
-            'start_date' => 'required|date',
+            'start_date' => ['required', 'date', 'after_or_equal:today'], // Đảm bảo ngày bắt đầu >= hôm nay
             'end_date' => 'required|date|after:start_date',
             'status' => 'required|string',
             'report_file' => 'nullable|file|mimes:pdf,doc,docx|max:2048',

@@ -13,6 +13,9 @@
         font-weight: bold;
         white-space: nowrap; /* Tránh bị cắt chữ */
     }
+    .custom-pagination .page-item {
+        margin: 0 5px; /* Tạo khoảng cách ngang giữa các nút */
+    }
 </style>
 
 <div class="container">
@@ -79,10 +82,11 @@
     </div>
 
     <!-- Phân trang -->
-    <div class="d-flex justify-content-center mt-4">
+    <div class="d-flex flex-column align-items-center mt-4">
+        
         <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item">{{ $projects->links('pagination::bootstrap-5') }}</li>
+            <ul class="pagination custom-pagination">
+                <li class="page-item">{{ $internships->links('pagination::bootstrap-5') }}</li>
             </ul>
         </nav>
     </div>

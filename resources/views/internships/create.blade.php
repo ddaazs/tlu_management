@@ -64,12 +64,19 @@
         <div class="form-group">
             <label>Ngày bắt đầu</label>
             <input type="date" name="start_date" class="form-control" value="{{ old('start_date') }}" required>
+            @error('start_date')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="form-group">
             <label>Ngày kết thúc</label>
             <input type="date" name="end_date" class="form-control" value="{{ old('end_date') }}" required>
+            @error('end_date')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
+
 
         <div class="form-group">
             <label>Trạng thái</label>

@@ -53,20 +53,26 @@
 
         <div class="form-group">
             <label>Ngày bắt đầu</label>
-            <input type="date" name="start_date" class="form-control" value="{{ $internship->start_date }}" required>
+            <input type="date" name="start_date" class="form-control" value="{{ old('start_date', $internship->start_date) }}" required>
+            @error('start_date')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="form-group">
-                <label>Ngày kết thúc</label>
-                <input type="date" name="end_date" class="form-control" value="{{ old('end_date', $internship->end_date) }}" required>
+            <label>Ngày kết thúc</label>
+            <input type="date" name="end_date" class="form-control" value="{{ old('end_date', $internship->end_date) }}" required>
+            @error('end_date')
+                <div class="text-danger">{{ $message }}</div>
+            @enderror
         </div>
 
         <div class="form-group">
             <label>Trạng thái</label>
             <select name="status" class="form-control" required>
-                <option value="Chưa bắt đầu" {{ old('status') == 'Chưa bắt đầu' ? 'selected' : '' }}>Chưa bắt đầu</option>
-                <option value="Đang thực tập" {{ old('status') == 'Đang thực tập' ? 'selected' : '' }}>Đang thực tập</option>
-                <option value="Hoàn thành" {{ old('status') == 'Hoàn thành' ? 'selected' : '' }}>Hoàn thành</option>
+                <option value="Chưa bắt đầu" {{ old('status', $internship->status) == 'Chưa bắt đầu' ? 'selected' : '' }}>Chưa bắt đầu</option>
+                <option value="Đang thực tập" {{ old('status', $internship->status) == 'Đang thực tập' ? 'selected' : '' }}>Đang thực tập</option>
+                <option value="Hoàn thành" {{ old('status', $internship->status) == 'Hoàn thành' ? 'selected' : '' }}>Hoàn thành</option>
             </select>
         </div>
 

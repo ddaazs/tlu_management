@@ -6,6 +6,10 @@
         max-width: 1200px;
         margin: 0 auto;
     }
+    .custom-pagination .page-item {
+        margin: 0 5px; /* Tạo khoảng cách ngang giữa các nút */
+    }
+    
 </style>
 <div class="container">
     <h2 class="text-center mb-4">Danh Sách Đề Tài</h2>
@@ -104,8 +108,13 @@
         </table>
     </div>
 
-    <div class="d-flex justify-content-center mt-4">
-        {{ $topics->links('pagination::bootstrap-5') }}
+    <div class="d-flex flex-column align-items-center mt-4">
+        
+        <nav aria-label="Page navigation">
+            <ul class="pagination custom-pagination">
+                <li class="page-item">{{ $internships->links('pagination::bootstrap-5') }}</li>
+            </ul>
+        </nav>
     </div>
 </div>
 
