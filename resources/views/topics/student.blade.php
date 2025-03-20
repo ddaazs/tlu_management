@@ -112,7 +112,7 @@
         
         <nav aria-label="Page navigation">
             <ul class="pagination custom-pagination">
-                <li class="page-item">{{ $internships->links('pagination::bootstrap-5') }}</li>
+                <li class="page-item">{{ $topics->links('pagination::bootstrap-5') }}</li>
             </ul>
         </nav>
     </div>
