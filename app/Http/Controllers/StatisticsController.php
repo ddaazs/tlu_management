@@ -30,7 +30,7 @@ class StatisticsController extends Controller
         // Thống kê theo giảng viên hướng dẫn (dựa trên dự án)
         $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
             ->groupBy('instructor_id')
-            ->with('instructor')
+            ->with('lecturer')
             ->get();
 
         // Thống kê theo điểm số đồ án (dựa trên bảng reviews, join projects)

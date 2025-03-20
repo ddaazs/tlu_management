@@ -14,29 +14,32 @@ use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\DocumentController;
 use Database\Seeders\TopicSeeder;
 
-Route::middleware(['auth'])->group(function () {
-    Route::get('/file-upload', [FileUploadController::class, 'index'])->name('file-upload');
+Route::resource('documents',DocumentController::class);
+Route::get('documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
 
-    Route::get('/file-upload/project/{id}/edit', [FileUploadController::class, 'editProject'])->name('edit.project');
-    Route::post('/file-upload/project/{id}', [FileUploadController::class, 'storeProject'])->name('store.project');
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/file-upload', [FileUploadController::class, 'index'])->name('file-upload');
 
-    Route::get('/file-upload/internship/{id}/edit', [FileUploadController::class, 'editInternship'])->name('edit.internship');
-    Route::post('/file-upload/internship/{id}', [FileUploadController::class, 'storeInternship'])->name('store.internship');
-    // Danh sách đồ án với phân trang
-    Route::get('/observe-projects', [FileUploadController::class, 'reviewProjects'])->name('observe.projects');
-    // Danh sách báo cáo thực tập với phân trang
-    Route::get('/observe-internships', [FileUploadController::class, 'reviewInternships'])->name('observe.internships');
-    Route::get('/download/project/{id}', [FileUploadController::class, 'downloadProjectFile'])->name('download.project');
-    Route::get('/download/internship/{id}', [FileUploadController::class, 'downloadInternshipFile'])->name('download.internship');
-    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+//     Route::get('/file-upload/project/{id}/edit', [FileUploadController::class, 'editProject'])->name('edit.project');
+//     Route::post('/file-upload/project/{id}', [FileUploadController::class, 'storeProject'])->name('store.project');
 
-// Route để hiển thị form upload tài liệu
-    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
-    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
-    Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
-    Route::get('/edit/{id}', [DocumentController::class, 'edit'])->name('documents.edit');
-    Route::post('/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
-});
+//     Route::get('/file-upload/internship/{id}/edit', [FileUploadController::class, 'editInternship'])->name('edit.internship');
+//     Route::post('/file-upload/internship/{id}', [FileUploadController::class, 'storeInternship'])->name('store.internship');
+//     // Danh sách đồ án với phân trang
+//     Route::get('/observe-projects', [FileUploadController::class, 'reviewProjects'])->name('observe.projects');
+//     // Danh sách báo cáo thực tập với phân trang
+//     Route::get('/observe-internships', [FileUploadController::class, 'reviewInternships'])->name('observe.internships');
+//     Route::get('/download/project/{id}', [FileUploadController::class, 'downloadProjectFile'])->name('download.project');
+//     Route::get('/download/internship/{id}', [FileUploadController::class, 'downloadInternshipFile'])->name('download.internship');
+//     Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+
+// // Route để hiển thị form upload tài liệu
+//     Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
+//     Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+//     Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+//     Route::get('/edit/{id}', [DocumentController::class, 'edit'])->name('documents.edit');
+//     Route::post('/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
+// });
 
 
 
@@ -73,24 +76,33 @@ Route::middleware(['auth', 'can:quantri'])->group(function () {
     Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
     Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
     Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
-    Route::resource('documents', DocumentController::class);
+    Route::get('/download/project/{id}', [FileUploadController::class, 'downloadProjectFile'])->name('download.project');
+    Route::get('/download/internship/{id}', [FileUploadController::class, 'downloadInternshipFile'])->name('download.internship');
+
+    Route::resource('documents',DocumentController::class);
+    Route::get('documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+    
 });
 
 //Route cho giang vien
 Route::middleware(['auth', 'can:giangvien'])->group(function () {
     Route::resource('students', StudentController::class);
     Route::get('students',[StudentController::class, 'search'])->name('students.search');
-    Route::resource('documents', DocumentController::class);
     Route::resource('internships', InternshipController::class);
     Route::resource('topics', TopicController::class);
     Route::resource('statistics', StatisticsController::class);
+
+    Route::resource('documents',DocumentController::class);
+    Route::get('documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+    
     
 });
 
 //Route cho sinh vien
 Route::middleware(['auth', 'can:sinhvien'])->group(function () {
     Route::resource('students', StudentController::class);
-    Route::resource('documents', DocumentController::class);
+    Route::resource('documents',DocumentController::class);
+    Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 
     // Route::get('projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
     Route::resource('projects', ProjectController::class);
