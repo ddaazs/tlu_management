@@ -6,9 +6,6 @@ use App\Models\Lecturer;
 use App\Models\Project;
 use App\Models\Student;
 use Illuminate\Http\Request;
-
-use function PHPUnit\Framework\isEmpty;
-
 class ProjectController extends Controller
 {
     /**
@@ -16,7 +13,7 @@ class ProjectController extends Controller
      */
     public function index(Request $request)
     {
-        $query = Project::with(['student', 'lecturer']);
+        $query = Project::with(['student', 'instructor']);
 
         // Lọc theo tên hoặc trạng thái nếu có yêu cầu tìm kiếm
         if ($request->has('search')) {
@@ -36,6 +33,31 @@ class ProjectController extends Controller
 
         return view('projects.index', compact('projects'));
     }
+    public function student(Request $request) // Thêm Request $request
+    {
+        $query = Project::with(['student', 'instructor']);
+
+        // Lọc theo tên hoặc trạng thái nếu có yêu cầu tìm kiếm
+        if ($request->has('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Áp dụng phân trang (10 bản ghi trên mỗi trang)
+        $projects = $query->paginate(10);
+
+        // Kiểm tra nếu là request AJAX thì trả về JSON (hỗ trợ tìm kiếm động)
+        if ($request->ajax()) {
+            return response()->json($projects);
+        }
+
+        return view('projects.student', compact('projects'));
+    }
+
+
+
 
 
     /**
@@ -44,8 +66,8 @@ class ProjectController extends Controller
     public function create()
     {
         $students = Student::all();
-        $lecturers = Lecturer::all();
-        return view('projects.create', compact('students', 'lecturers'));
+        $instructor = Lecturer::all();
+        return view('projects.create', compact('students', 'instructors'));
     }
 
     /**
@@ -71,7 +93,7 @@ class ProjectController extends Controller
      */
     public function show(Student $student)
     {
-        $project = Project::with(['student', 'lecturer'])->findOrFail($student);
+        $project = Project::with(['student', 'instructor'])->findOrFail($id);
         return view('projects.show', compact('project'));
     }
 
@@ -82,8 +104,8 @@ class ProjectController extends Controller
     {
         $project = Project::findOrFail($id);
         $students = Student::all();
-        $lecturers = Lecturer::all();
-        return view('projects.edit', compact('project', 'students', 'lecturers'));
+        $instructors = Lecturer::all();
+        return view('projects.edit', compact('project', 'students', 'instructors'));
     }
 
     /**

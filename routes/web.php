@@ -142,10 +142,27 @@ require __DIR__.'/auth.php';
 
 use App\Http\Controllers\InternshipController;
 
-Route::resource('internships', InternshipController::class);
+Route::middleware(['auth'])->group(function () {
+    // 🔹 Danh sách thực tập (Dành cho giảng viên & quản trị)
+    Route::get('/internships', [InternshipController::class, 'index'])->name('internships.index');
 
+    // 🔹 Chức năng cho Sinh viên
+    Route::prefix('internships')->group(function () {
+        Route::get('/student', [InternshipController::class, 'studentIndex'])->name('internships.studentIndex');
+        Route::get('/register', [InternshipController::class, 'studentCreate'])->name('internships.studentCreate');
+        Route::post('/register', [InternshipController::class, 'studentStore'])->name('internships.studentStore');
+    });
 
+    // 🔹 Chức năng cho Giảng viên & Quản trị viên
+    Route::get('/internships/create', [InternshipController::class, 'create'])->name('internships.create');
+    Route::post('/internships', [InternshipController::class, 'store'])->name('internships.store');
+    Route::get('/internships/{internship}/edit', [InternshipController::class, 'edit'])->name('internships.edit');
+    Route::put('/internships/{internship}', [InternshipController::class, 'update'])->name('internships.update');
+    Route::delete('/internships/{internship}', [InternshipController::class, 'destroy'])->name('internships.destroy');
 
+    // 🔹 Di chuyển route chi tiết xuống cuối
+    Route::get('/internships/{internship}', [InternshipController::class, 'show'])->name('internships.show');
+});
 
 
 

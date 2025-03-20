@@ -7,6 +7,7 @@ use App\Models\Lecturer;
 use App\Models\Student;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class TopicController extends Controller
 {
@@ -15,51 +16,64 @@ class TopicController extends Controller
      */
     public function index()
     {   
-        $topics = Topic::with('lecturer')
-                   ->orderBy('created_at', 'desc') // Sắp xếp mới nhất lên đầu
-                   ->paginate(10); // Phân trang 10 đề tài mỗi trang
-         // Phân trang 10 bản ghi
+        $topics = Topic::with('lecturer')->orderBy('created_at', 'desc')->paginate(10);
         $lecturers = Lecturer::all();
         $students = Student::all();
-        return view('topics.index', compact('topics','lecturers', 'students'));
+        return view('topics.index', compact('topics', 'lecturers', 'students'));
     }
 
-    /**
-     * Hiển thị form tạo đề tài mới.
-     */
+    public function student()
+    {   
+        $topics = Topic::with('lecturer')->orderBy('created_at', 'desc')->paginate(10);
+        $lecturers = Lecturer::all();
+        $students = Student::all();
+        return view('topics.student', compact('topics', 'lecturers', 'students'));
+    }
+
     public function show($id)
     {
-        $topic = Topic::findOrFail($id); // Tìm đề tài theo ID, nếu không có thì báo lỗi 404
+        $topic = Topic::findOrFail($id);
         return view('topics.show', compact('topic'));
     }
+
     public function pending()
     {
+        if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền xem danh sách chờ duyệt.');
+        }
+
         $topics = Topic::where('status', 'pending')->get();
         return view('topics.pending', compact('topics'));
     }
+
     public function approve(Topic $topic)
     {
+        if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
+            return response()->json(['success' => false, 'message' => 'Bạn không có quyền duyệt đề tài.'], 403);
+        }
+
         $topic->update(['status' => 'approved']);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Đề tài đã được duyệt!',
-            'status' => 'approved'
-        ]);
+        return redirect()->route('topics.pending')->with('success', 'Đề tài đã được duyệt!');
     }
 
     public function reject(Topic $topic)
     {
+        if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
+            return response()->json(['success' => false, 'message' => 'Bạn không có quyền từ chối đề tài.'], 403);
+        }
+
         $topic->update(['status' => 'rejected']);
 
-        return response()->json([
-            'success' => true,
-            'message' => 'Đề tài đã bị từ chối!',
-            'status' => 'rejected'
-        ]);
+        return redirect()->route('topics.pending')->with('success', 'Đề tài đã bị từ chối!');
     }
+
     public function changeStatus($id, $action)
     {
+        if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền thay đổi trạng thái.');
+        }
+
         $topic = Topic::findOrFail($id);
 
         if (!in_array($action, ['approve', 'reject'])) {
@@ -71,8 +85,13 @@ class TopicController extends Controller
 
         return redirect()->route('topics.pending')->with('success', 'Cập nhật trạng thái thành công.');
     }
+
     public function assign(Request $request)
     {
+        if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền phân công giảng viên.');
+        }
+
         $request->validate([
             'topic_id' => 'required|exists:topics,id',
             'lecturer_id' => 'required|exists:users,id',
@@ -81,72 +100,96 @@ class TopicController extends Controller
 
         $topic = Topic::findOrFail($request->topic_id);
 
-        // Tạo mới project từ topic
         Project::create([
             'name' => $topic->title,
             'description' => $topic->description,
             'instructor_id' => $request->lecturer_id,
             'student_id' => $request->student_id,
             'status' => 'Đang thực hiện',
-            'topic_id' => $topic->id, // Lưu liên kết với topic
+            'topic_id' => $topic->id,
         ]);
 
         return redirect()->route('topics.index')->with('success', 'Phân công giảng viên hướng dẫn thành công!');
     }
+
     public function create()
     {
-        $lecturers = Lecturer::all(); // Lấy danh sách giảng viên
+        if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền tạo đề tài.');
+        }
+
+        $lecturers = Lecturer::all();
         return view('topics.create', compact('lecturers'));
     }
 
-    /**
-     * Lưu đề tài mới vào database.
-     */
     public function store(Request $request)
     {
-
-        try {
-            // ✅ Kiểm tra dữ liệu đầu vào
-            $validatedData = $request->validate([
-                'title' => 'required|string|max:255',
-                'description' => 'required|string',
-                'lecturer_id' => 'required|exists:lecturers,id',
-                'student_id' => 'nullable|exists:students,id',
-                'status' => 'nullable|string|in:pending,approved,rejected',
-            ]);
-    
-            // ✅ Tạo đề tài mới
-            $topic = Topic::create($validatedData);
-    
-            // ✅ Kiểm tra nếu lưu thành công
-            if ($topic) {
-                return redirect()->route('topics.index')->with('success', 'Đề tài đã được lưu thành công!');
-            } else {
-                return back()->with('error', 'Lưu đề tài thất bại!');
-            }
-        } catch (\Exception $e) {
-            return back()->with('error', 'Lỗi khi lưu đề tài: ' . $e->getMessage());
+        if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền tạo đề tài.');
         }
+
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'lecturer_id' => 'required|exists:lecturers,id',
+        ]);
+
+        $topic = Topic::create($validatedData);
+
+        return redirect()->route('topics.index')->with('success', 'Đề tài đã được lưu thành công!');
     }
 
+    public function register()
+    {
+        if (!Gate::allows('sinhvien')) {
+            abort(403, 'Chỉ sinh viên mới có thể đăng ký đề tài.');
+        }
 
-    /**
-     * Hiển thị form chỉnh sửa đề tài.
-     */
+        $lecturers = Lecturer::all();
+        return view('topics.register', compact('lecturers'));
+    }
+
+    public function storeStudent(Request $request)
+    {
+        if (!Gate::allows('sinhvien')) {
+            abort(403, 'Chỉ sinh viên mới có thể đăng ký đề tài.');
+        }
+
+        $validatedData = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'lecturer_id' => 'required|exists:lecturers,id',
+        ]);
+
+        $topic = Topic::create([
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'lecturer_id' => $validatedData['lecturer_id'],
+            'student_id' => auth()->user()->id,
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('topics.student')->with('success', 'Đăng ký đề tài thành công!');
+    }
+
     public function edit($id)
     {
+        if (!Gate::allows('giangvien') or Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền chỉnh sửa đề tài.');
+        }
+
         $topic = Topic::findOrFail($id);
-        $lecturers = Lecturer::all(); // Lấy danh sách giảng viên
+        $lecturers = Lecturer::all();
 
         return view('topics.edit', compact('topic', 'lecturers'));
     }
 
-
-    /**
-     * Cập nhật đề tài trong database.
-     */
     public function update(Request $request, $id)
     {
+        if (!Gate::allows('giangvien') or Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền chỉnh sửa đề tài.');
+        }
+
         $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
@@ -154,20 +197,17 @@ class TopicController extends Controller
         ]);
 
         $topic = Topic::findOrFail($id);
-        $topic->update([
-            'title' => $request->title,
-            'description' => $request->description,
-            'lecturer_id' => $request->lecturer_id,
-        ]);
+        $topic->update($request->all());
 
         return redirect()->route('topics.index')->with('success', 'Đề tài đã được cập nhật thành công!');
     }
 
-    /**
-     * Xóa đề tài.
-     */
     public function destroy($id)
     {
+        if (!Gate::allows('giangvien') or Gate::allows('quantri')) {
+            abort(403, 'Bạn không có quyền xóa đề tài.');
+        }
+
         $topic = Topic::findOrFail($id);
         $topic->delete();
 

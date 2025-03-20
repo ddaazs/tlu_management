@@ -25,8 +25,13 @@
                 <span class="badge bg-danger">Từ chối</span>
             @endif
         </p>
-        <div class="mb-3 text-end">
+        {{-- <div class="mb-3 text-end">
             <a href="{{ route('topics.index') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Quay lại
+            </a>
+        </div> --}}
+        <div class="mb-3 text-end">
+            <a href="{{ route(auth()->user()->role === 'sinhvien' ? 'topics.student' : 'topics.index') }}" class="btn btn-success">
                 <i class="fas fa-plus"></i> Quay lại
             </a>
         </div>
