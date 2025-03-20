@@ -14,37 +14,37 @@ class StudentController extends Controller
      * Hiển thị danh sách sinh viên.
      */
     public function search(Request $request)
-{
-    $students = Student::query(); // Khởi tạo query builder
+    {
+        $students = Student::query(); // Khởi tạo query builder
 
-    // Nếu người dùng nhập tên
-    if ($request->filled('full_name')) {
-        $students->where('full_name', 'like', "%" . $request->full_name . "%");
+        // Nếu người dùng nhập tên
+        if ($request->filled('full_name')) {
+            $students->where('full_name', 'like', "%" . $request->full_name . "%");
+        }
+
+        // Nếu người dùng chọn lớp
+        if ($request->filled('class')) {
+            $students->where('class', 'like', "%" . $request->class . "%");
+        }
+
+        // Nếu người dùng chọn ngành
+        if ($request->filled('major')) {
+            $students->where('major', 'like', "%" . $request->major . "%");
+        }
+
+        // Lấy dữ liệu
+        $students = $students->get();
+
+        // Kiểm tra nếu không có sinh viên nào thì trả về thông báo
+        if ($students->isEmpty()) {
+            return redirect()->route('students.search')->with('error', 'Không tìm thấy sinh viên phù hợp.');
+        }
+        
+        return view('students.index', compact('students'));
     }
 
-    // Nếu người dùng chọn lớp
-    if ($request->filled('class')) {
-        $students->where('class', 'like', "%" . $request->class . "%");
-    }
 
-    // Nếu người dùng chọn ngành
-    if ($request->filled('major')) {
-        $students->where('major', 'like', "%" . $request->major . "%");
-    }
-
-    // Lấy dữ liệu
-    $students = $students->get();
-
-    // Kiểm tra nếu không có sinh viên nào thì trả về thông báo
-    if ($students->isEmpty()) {
-        return redirect()->route('students.search')->with('error', 'Không tìm thấy sinh viên phù hợp.');
-    }
-    
-    return view('students.index', compact('students'));
-}
-
-
-     public function index(Request $request)
+     public function index()
     {
         $students = Student::paginate(5);
         return view('students.index', compact('students'));

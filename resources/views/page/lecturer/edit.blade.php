@@ -3,7 +3,7 @@
 @section('title', 'Tài khoản')
     
 @section('content')
-<div class="wrapper">
+<div class="">
     <h2 class="mb-3">Chỉnh sửa thông tin giảng viên</h2>
     
     <form method="POST" action="{{ route('lecturers.update', $lecturer->id) }}">

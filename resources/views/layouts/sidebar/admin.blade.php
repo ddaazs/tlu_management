@@ -6,12 +6,12 @@
               Tài khoản
             </a>
           </li>
-          {{-- <li>
-            <a href="{{ route('students.search') }}" class="nav-link text-white">
+          <li>
+            <a href="{{ route('students.index') }}" class="nav-link text-white">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
               Sinh viên
             </a>
-          </li> --}}
+          </li>
           <li>
             <a href="{{ route('lecturers.index') }}" class="nav-link {{ request()->is('lecturers*') ? 'active' : 'text-white' }}">
               <svg class="bi pe-none me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
