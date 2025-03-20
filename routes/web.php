@@ -11,6 +11,7 @@ use App\Http\Controllers\InternshipCompanyController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\StudentController;
 use Database\Seeders\TopicSeeder;
 
 Route::resource('documents',DocumentController::class);
