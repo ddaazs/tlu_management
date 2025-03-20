@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
 use App\Models\Student;
 use App\Models\Project;
@@ -53,7 +54,7 @@ class StatisticsController extends Controller
     }
 
     /**
-     * Xuất báo cáo thống kê theo ngành.
+     * Xuất báo cáo thống kê theo ngành ra file Excel.
      */
     public function exportMajor()
     {
@@ -61,7 +62,7 @@ class StatisticsController extends Controller
     }
 
     /**
-     * Xuất báo cáo thống kê theo giảng viên.
+     * Xuất báo cáo thống kê theo giảng viên ra file Excel.
      */
     public function exportLecturer()
     {
@@ -69,7 +70,7 @@ class StatisticsController extends Controller
     }
 
     /**
-     * Xuất báo cáo thống kê theo điểm số đồ án.
+     * Xuất báo cáo thống kê theo điểm số đồ án ra file Excel.
      */
     public function exportScore()
     {
@@ -77,7 +78,7 @@ class StatisticsController extends Controller
     }
 
     /**
-     * Xuất báo cáo thống kê trạng thái đồ án.
+     * Xuất báo cáo thống kê theo trạng thái đồ án ra file Excel.
      */
     public function exportStatus()
     {
@@ -85,10 +86,123 @@ class StatisticsController extends Controller
     }
 
     /**
-     * Xuất báo cáo thống kê số file nộp.
+     * Xuất báo cáo thống kê số file nộp ra file Excel.
      */
     public function exportSubmission()
     {
         return Excel::download(new SubmissionExport, 'submission_report.xlsx');
+    }
+
+    /**
+     * Xuất báo cáo thống kê theo ngành ra file PDF.
+     */
+    public function exportMajorPdf()
+    {
+        $byMajor = Student::select('major', DB::raw('COUNT(*) as total'))
+            ->groupBy('major')
+            ->get();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.major', compact('byMajor'));
+        return $pdf->download('major_report.pdf');
+    }
+
+    /**
+     * Xuất báo cáo thống kê theo giảng viên ra file PDF.
+     */
+    public function exportLecturerPdf()
+    {
+        $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
+            ->groupBy('instructor_id')
+            ->with('instructor')
+            ->get();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.lecturer', compact('byLecturer'));
+        return $pdf->download('lecturer_report.pdf');
+    }
+
+    /**
+     * Xuất báo cáo thống kê theo điểm số đồ án ra file PDF.
+     */
+    public function exportScorePdf()
+    {
+        $byScore = DB::table('reviews')
+            ->join('projects', 'reviews.project_id', '=', 'projects.id')
+            ->select('reviews.score', DB::raw('COUNT(DISTINCT projects.student_id) as total_students'))
+            ->groupBy('reviews.score')
+            ->get();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.score', compact('byScore'));
+        return $pdf->download('score_report.pdf');
+    }
+
+    /**
+     * Xuất báo cáo thống kê theo trạng thái đồ án ra file PDF.
+     */
+    public function exportStatusPdf()
+    {
+        $byStatus = Project::select('status', DB::raw('COUNT(*) as total'))
+            ->groupBy('status')
+            ->get();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.status', compact('byStatus'));
+        return $pdf->download('status_report.pdf');
+    }
+
+    /**
+     * Xuất báo cáo thống kê số file nộp ra file PDF.
+     */
+    public function exportSubmissionPdf()
+    {
+        $projectCount = Project::whereNotNull('project_file')->count();
+        $internshipCount = Internship::whereNotNull('report_file')->count();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.submission', compact('projectCount', 'internshipCount'));
+        return $pdf->download('submission_report.pdf');
+    }
+
+    public function viewMajorPdf()
+    {
+        $byMajor = Student::select('major', DB::raw('COUNT(*) as total'))
+            ->groupBy('major')
+            ->get();
+
+        // Tạo file PDF và stream (xem trước) trên trình duyệt
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.major', compact('byMajor'));
+        return $pdf->stream('major_report.pdf');
+    }
+
+    public function viewLecturerPdf(){
+        $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
+            ->groupBy('instructor_id')
+            ->with('instructor')
+            ->get();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.lecturer', compact('byLecturer'));
+        return $pdf->stream('lecturer_report.pdf');
+    }
+    public function viewScorePdf(){
+        $byScore = DB::table('reviews')
+            ->join('projects', 'reviews.project_id', '=', 'projects.id')
+            ->select('reviews.score', DB::raw('COUNT(DISTINCT projects.student_id) as total_students'))
+            ->groupBy('reviews.score')
+            ->get();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.score', compact('byScore'));
+        return $pdf->stream('score_report.pdf');
+    }
+    public function viewStatusPdf(){
+        $byStatus = Project::select('status', DB::raw('COUNT(*) as total'))
+            ->groupBy('status')
+            ->get();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.status', compact('byStatus'));
+        return $pdf->stream('status_report.pdf');
+    }
+    public function viewSubmissionPdf(){
+        $projectCount = Project::whereNotNull('project_file')->count();
+        $internshipCount = Internship::whereNotNull('report_file')->count();
+
+        $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.submission', compact('projectCount', 'internshipCount'));
+        return $pdf->stream('submission_report.pdf');
     }
 }
