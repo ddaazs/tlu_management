@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Danh Sách Đề Tài')
 @section('content')
 <style>
     .table-container {

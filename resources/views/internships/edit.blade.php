@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Chỉnh sửa Thực tập')
 @section('content')
 <div class="container">
     <h2>Chỉnh sửa Thực tập</h2>

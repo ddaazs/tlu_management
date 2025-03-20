@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Đăng Ký Đề Tài')
 @section('content')
 <div class="container">
     <h2 class="mb-4">Đăng Ký Đề Tài</h2>

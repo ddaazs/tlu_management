@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Danh Sách Thực Tập')
 @section('content')
 <style>
     .custom-pagination .page-item {

@@ -1,5 +1,6 @@
 
 @extends('layouts.app')
+@section('title', 'Danh Sách Đồ Án')
 @section('content')
 <style>
     

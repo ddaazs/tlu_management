@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Chi Tiết Đề Tài')
 @section('content')
 <div class="container mt-4">
     <div class="card p-4 shadow-sm" style="max-width: 700px; margin: auto;">

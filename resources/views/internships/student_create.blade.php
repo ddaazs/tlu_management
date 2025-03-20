@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Đăng ký Thực tập')
 @section('content')
 <div class="container">
     <h2>Đăng ký Thực tập</h2>
