@@ -4,6 +4,12 @@
 @section('content')
 <div class="container">
     <h2>Đăng ký Thực tập</h2>
+    @if(session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
     <form action="{{ route('internships.studentStore') }}" method="POST">
         @csrf
 

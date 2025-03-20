@@ -10,6 +10,18 @@
 </style>
 <div class="container">
     <h2>Danh sách Thực tập</h2>
+    @if(session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
+    @if(session('warning'))
+        <div class="alert alert-warning">
+            {{ session('warning') }}
+        </div>
+    @endif
+    
+
     
     <!-- Nút đăng ký thực tập -->
     <a href="{{ route('internships.studentCreate') }}" class="btn btn-success mb-3">Đăng ký thực tập</a>
