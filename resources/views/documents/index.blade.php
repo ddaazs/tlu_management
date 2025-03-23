@@ -24,7 +24,7 @@
             @foreach($documents as $document)
                 <tr>
                     <td>{{ $document->title }}</td>
-                    <td>{{ $document->description }}</td>
+                    <td>{{ Str::limit($document->description, 50, '...') }}</td>
                     <td>
                         <a href="{{ route('documents.download', $document->id) }}" class="btn btn-success">Tải xuống</a>
                         @if(Gate::allows('giangvien') or Gate::allows('quantri'))
@@ -35,5 +35,8 @@
             @endforeach
             </tbody>
         </table>
+        <div class="d-flex justify-content-center text-black">
+            {{ $documents->links() }}
+        </div>
     </div>
 @endsection
