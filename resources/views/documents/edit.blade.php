@@ -21,7 +21,7 @@
 
         <form action="{{ route('documents.update', $document->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
-
+            @method('PUT')
             <!-- Title Field -->
             <div class="mb-3">
                 <label for="title" class="form-label">Tiêu đề:</label>
