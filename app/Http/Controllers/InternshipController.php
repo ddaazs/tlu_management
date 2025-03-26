@@ -19,7 +19,7 @@ class InternshipController extends Controller
             abort(403, 'Bạn không có quyền truy cập.');
         }
 
-        $internships = Internship::with(['student', 'company', 'instructor'])->paginate(10);
+        $internships = Internship::with(['student', 'company', 'lecturer'])->paginate(10);
         return view('internships.index', compact('internships'));
     }
 
@@ -30,7 +30,7 @@ class InternshipController extends Controller
             abort(403, 'Chỉ sinh viên mới có quyền truy cập.');
         }
 
-        $internships = Internship::with(['student', 'company', 'instructor'])->paginate(10);
+        $internships = Internship::with(['student', 'company', 'lecrurer'])->paginate(10);
         
         return view('internships.student_index', compact('internships'));
     }

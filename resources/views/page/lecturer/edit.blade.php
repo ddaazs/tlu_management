@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Tài khoản')
+@section('title', 'Chỉnh sửa giảng viên')
     
 @section('content')
 <div class="">

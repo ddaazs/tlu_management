@@ -70,13 +70,9 @@
         </table>
     </div>
     
-    <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item">{{ $internships->links('pagination::bootstrap-5') }}</li>
-            </ul>
-        </nav>
-    </div>
+    <div class="d-flex justify-content-center text-black">
+        {{ $internships->links() }}
+      </div>
 </div>
 
 

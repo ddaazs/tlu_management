@@ -79,12 +79,8 @@
     </div>
 
     <!-- Phân trang -->
-    <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item">{{ $projects->links('pagination::bootstrap-5') }}</li>
-            </ul>
-        </nav>
-    </div>
+    <div class="d-flex justify-content-center text-black">
+        {{ $projects->links() }}
+      </div>
 </div>
 @endsection

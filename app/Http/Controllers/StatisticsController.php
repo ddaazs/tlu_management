@@ -113,7 +113,7 @@ class StatisticsController extends Controller
     {
         $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
             ->groupBy('instructor_id')
-            ->with('instructor')
+            ->with('lecturer')
             ->get();
 
         $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.lecturer', compact('byLecturer'));
@@ -174,7 +174,7 @@ class StatisticsController extends Controller
     public function viewLecturerPdf(){
         $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
             ->groupBy('instructor_id')
-            ->with('instructor')
+            ->with('lecturer')
             ->get();
 
         $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.lecturer', compact('byLecturer'));

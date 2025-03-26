@@ -32,7 +32,7 @@ class Internship extends Model
     }
 
     // Quan hệ với Lecturer (giảng viên hướng dẫn)
-    public function instructor()
+    public function lecturer()
     {
         return $this->belongsTo(Lecturer::class, 'instructor_id');
     }
