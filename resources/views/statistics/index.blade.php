@@ -47,7 +47,7 @@
                 <div class="d-flex gap-2">
                     <a href="{{ route('export.major') }}" class="btn btn-custom mt-2">Xuất Excel</a>
                     <a href="{{ route('export.major.pdf') }}" class="btn btn-custom mt-2">Xuất PDF</a>
-                    <a href="{{ route('view.major.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
+                    <a target="_blank" href="{{ route('view.major.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                 <div class="d-flex gap-2">
                     <a href="{{ route('export.lecturer') }}" class="btn btn-custom mt-2">Xuất Excel</a>
                     <a href="{{ route('export.lecturer.pdf') }}" class="btn btn-custom mt-2">Xuất PDF</a>
-                    <a href="{{ route('view.lecturer.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
+                    <a target="_blank" href="{{ route('view.lecturer.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
                 </div>
             </div>
         </div>
@@ -111,7 +111,7 @@
                 <div class="d-flex gap-2">
                     <a href="{{ route('export.score') }}" class="btn btn-custom mt-2">Xuất Excel</a>
                     <a href="{{ route('export.score.pdf') }}" class="btn btn-custom mt-2">Xuất PDF</a>
-                    <a href="{{ route('view.score.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
+                    <a target="_blank" href="{{ route('view.score.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
                 </div>
             </div>
         </div>
@@ -143,7 +143,7 @@
                 <div class="d-flex gap-2">
                     <a href="{{ route('export.status') }}" class="btn btn-custom mt-2">Xuất Excel</a>
                     <a href="{{ route('export.status.pdf') }}" class="btn btn-custom mt-2">Xuất PDF</a>
-                    <a href="{{ route('view.status.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
+                    <a target="_blank" href="{{ route('view.status.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
                 </div>
             </div>
         </div>
@@ -177,7 +177,7 @@
                 <div class="d-flex gap-2">
                     <a href="{{ route('export.submission') }}" class="btn btn-custom mt-2">Xuất Excel</a>
                     <a href="{{ route('export.submission.pdf') }}" class="btn btn-custom mt-2">Xuất PDF</a>
-                    <a href="{{ route('view.submission.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
+                    <a target="_blank" href="{{ route('view.submission.pdf') }}" class="btn btn-custom mt-2">Xem File(PDF)</a>
                 </div>
             </div>
         </div>
