@@ -175,29 +175,6 @@ Route::middleware(['auth', 'can:giangvien'])->group(function () {
 });
 
 
-
-
-
-
-
-// // Xuất báo cáo cho từng thống kê
-// Route::get('/statistics/export/major', [StatisticsController::class, 'exportMajor'])->name('export.major');
-// Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportLecturer'])->name('export.lecturer');
-// Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
-// Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
-// Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
-// Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
-// Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
-// Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
-// Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
-// Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
-// Route::resource('projects', ProjectController::class);
-// Route::resource('topics', TopicController::class);
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
