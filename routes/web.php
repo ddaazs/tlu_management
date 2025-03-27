@@ -16,14 +16,33 @@ use App\Http\Controllers\InternshipController;
 use Database\Seeders\TopicSeeder;
 
 
+Route::get('/', fn() => redirect('home'));
+Route::get('/home', fn() => view('page.home'))->middleware(['auth', 'verified'])->name('home');
+
+    
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/file-upload', [FileUploadController::class, 'index'])->name('file-upload');
+
+    Route::get('/file-upload/project/{id}/edit', [FileUploadController::class, 'editProject'])->name('edit.project');
+    Route::post('/file-upload/project/{id}', [FileUploadController::class, 'storeProject'])->name('store.project');
+
+    Route::get('/file-upload/internship/{id}/edit', [FileUploadController::class, 'editInternship'])->name('edit.internship');
+    Route::post('/file-upload/internship/{id}', [FileUploadController::class, 'storeInternship'])->name('store.internship');
+    Route::get('/download/project/{id}', [FileUploadController::class, 'downloadProjectFile'])->name('download.project');
+    Route::get('/download/internship/{id}', [FileUploadController::class, 'downloadInternshipFile'])->name('download.internship');
+    // Route::resource('documents', DocumentController::class)->except(['show', 'destroy']);
+    // Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::resource('documents', DocumentController::class);
+
 // Trang chủ
 Route::get('/', fn() => redirect('home'));
 Route::get('/home', fn() => view('page.home'))->middleware(['auth', 'verified'])->name('home');
 
 //Route cho sinh vien
 Route::middleware(['auth', 'can:sinhvien'])->group(function () {
-    
-
     // Topics
     Route::get('/topics/register', [TopicController::class, 'register'])->name('topics.register');
     Route::post('/topics/register/{id}', [TopicController::class, 'register_1'])->name('topics.register.submit');
@@ -48,19 +67,16 @@ Route::middleware(['auth', 'can:sinhvien'])->group(function () {
     Route::post('/file-upload/project/{id}', [FileUploadController::class, 'storeProject'])->name('store.project');
 
     // Documents
-    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
-    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
-    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
-    Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
-    Route::get('/documents/{id}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
-    Route::put('/documents/{id}', [DocumentController::class, 'update'])->name('documents.update');
+
 
     // Students resource
     Route::resource('students', StudentController::class);
     Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
 });
 
-// Route dành cho Admin (Quản trị viên)
+
+});
+
 Route::middleware(['auth', 'can:quantri'])->group(function () {
 
 
@@ -83,7 +99,7 @@ Route::middleware(['auth', 'can:quantri'])->group(function () {
         'topics'      => TopicController::class,
         'statistics'  => StatisticsController::class,
         'projects'    => ProjectController::class,
-        'documents'   => DocumentController::class,
+        // 'documents'   => DocumentController::class,
         'students'    => StudentController::class
     ]);
     // Thống kê & Xuất báo cáo
@@ -94,14 +110,14 @@ Route::middleware(['auth', 'can:quantri'])->group(function () {
         Route::get('/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
         Route::get('/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
         Route::get('/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
-    
+
         // Xuất file PDF
         Route::get('/export/major-pdf', [StatisticsController::class, 'exportMajorPdf'])->name('export.major.pdf');
         Route::get('/export/lecturer-pdf', [StatisticsController::class, 'exportLecturerPdf'])->name('export.lecturer.pdf');
         Route::get('/export/score-pdf', [StatisticsController::class, 'exportScorePdf'])->name('export.score.pdf');
         Route::get('/export/status-pdf', [StatisticsController::class, 'exportStatusPdf'])->name('export.status.pdf');
         Route::get('/export/submission-pdf', [StatisticsController::class, 'exportSubmissionPdf'])->name('export.submission.pdf');
-    
+
         // Xem file PDF
         Route::get('/view/major-pdf', [StatisticsController::class, 'viewMajorPdf'])->name('view.major.pdf');
         Route::get('/view/lecturer-pdf', [StatisticsController::class, 'viewLecturerPdf'])->name('view.lecturer.pdf');
@@ -109,18 +125,10 @@ Route::middleware(['auth', 'can:quantri'])->group(function () {
         Route::get('/view/status-pdf', [StatisticsController::class, 'viewStatusPdf'])->name('view.status.pdf');
         Route::get('/view/submission-pdf', [StatisticsController::class, 'viewSubmissionPdf'])->name('view.submission.pdf');
     });
-    
 
-    // Download files
-    Route::prefix('download')->group(function () {
-        Route::get('/project/{id}', [FileUploadController::class, 'downloadProjectFile'])->name('project');
-        Route::get('/internship/{id}', [FileUploadController::class, 'downloadInternshipFile'])->name('internship');
-        Route::get('/documents/{id}', [DocumentController::class, 'download'])->name('documents');
-    });
 
-    // Quan sát đồ án & thực tập
-    Route::get('/observe-projects', [FileUploadController::class, 'reviewProjects'])->name('observe.projects');
-    Route::get('/observe-internships', [FileUploadController::class, 'reviewInternships'])->name('observe.internships');
+
+
 });
 
 // Route dành cho Giảng viên
@@ -128,21 +136,21 @@ Route::middleware(['auth', 'can:giangvien'])->group(function () {
 
 
     Route::get('students/search', [StudentController::class, 'search'])->name('students.search');
-    
+
     // Quản lý chủ đề
     Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
     Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
     Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
     Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
     Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
-    
+
     Route::resources([
         'students'    => StudentController::class,
         'internships' => InternshipController::class,
         'topics'      => TopicController::class,
         'statistics'  => StatisticsController::class,
         'projects'    => ProjectController::class,
-        'documents'   => DocumentController::class
+        // 'documents'   => DocumentController::class
     ]);
 
     // Xuất báo cáo
@@ -153,57 +161,44 @@ Route::middleware(['auth', 'can:giangvien'])->group(function () {
         Route::get('/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
         Route::get('/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
         Route::get('/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
-    
+
         // Xuất file PDF
         Route::get('/export/major-pdf', [StatisticsController::class, 'exportMajorPdf'])->name('export.major.pdf');
         Route::get('/export/lecturer-pdf', [StatisticsController::class, 'exportLecturerPdf'])->name('export.lecturer.pdf');
         Route::get('/export/score-pdf', [StatisticsController::class, 'exportScorePdf'])->name('export.score.pdf');
         Route::get('/export/status-pdf', [StatisticsController::class, 'exportStatusPdf'])->name('export.status.pdf');
         Route::get('/export/submission-pdf', [StatisticsController::class, 'exportSubmissionPdf'])->name('export.submission.pdf');
-    
+
         // Xem file PDF
         Route::get('/view/major-pdf', [StatisticsController::class, 'viewMajorPdf'])->name('view.major.pdf');
         Route::get('/view/lecturer-pdf', [StatisticsController::class, 'viewLecturerPdf'])->name('view.lecturer.pdf');
         Route::get('/view/score-pdf', [StatisticsController::class, 'viewScorePdf'])->name('view.score.pdf');
         Route::get('/view/status-pdf', [StatisticsController::class, 'viewStatusPdf'])->name('view.status.pdf');
         Route::get('/view/submission-pdf', [StatisticsController::class, 'viewSubmissionPdf'])->name('view.submission.pdf');
-    });
-    
 
-    // Download files
-    Route::get('documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+        // Quan sát đồ án & thực tập
+        Route::get('/observe-projects', [FileUploadController::class, 'reviewProjects'])->name('observe.projects');
+        Route::get('/observe-internships', [FileUploadController::class, 'reviewInternships'])->name('observe.internships');
+    });
+    // Danh sách đồ án với phân trang
+    Route::get('/observe-projects', [FileUploadController::class, 'reviewProjects'])->name('observe.projects');
+    // Danh sách báo cáo thực tập với phân trang
+    Route::get('/observe-internships', [FileUploadController::class, 'reviewInternships'])->name('observe.internships');
+
+
 });
 
 
 
 
 
-
-
-// // Xuất báo cáo cho từng thống kê
-// Route::get('/statistics/export/major', [StatisticsController::class, 'exportMajor'])->name('export.major');
-// Route::get('/statistics/export/lecturer', [StatisticsController::class, 'exportLecturer'])->name('export.lecturer');
-// Route::get('/statistics/export/score', [StatisticsController::class, 'exportScore'])->name('export.score');
-// Route::get('/statistics/export/status', [StatisticsController::class, 'exportStatus'])->name('export.status');
-// Route::get('/statistics/export/submission', [StatisticsController::class, 'exportSubmission'])->name('export.submission');
-// Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
-// Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
-// Route::post('/topics/{topic}/reject', [TopicController::class, 'reject'])->name('topics.reject');
-// Route::patch('/topics/{id}/{action}', [TopicController::class, 'changeStatus'])->name('topics.changeStatus');
-// Route::post('/topics/assign', [TopicController::class, 'assign'])->name('topics.assign');
-// Route::resource('projects', ProjectController::class);
-// Route::resource('topics', TopicController::class);
-
-// Route::get('/dashboard', function () {
-//     return view('dashboard');
-// })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    
 });
+
 
 
 
