@@ -1,10 +1,10 @@
 <?php
 require __DIR__.'/auth.php';
+use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ImportController;
 use App\Http\Controllers\LecturerController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\InternshipCompanyController;
@@ -19,6 +19,46 @@ use Database\Seeders\TopicSeeder;
 // Trang chủ
 Route::get('/', fn() => redirect('home'));
 Route::get('/home', fn() => view('page.home'))->middleware(['auth', 'verified'])->name('home');
+
+//Route cho sinh vien
+Route::middleware(['auth', 'can:sinhvien'])->group(function () {
+    
+
+    // Topics
+    Route::get('/topics/register', [TopicController::class, 'register'])->name('topics.register');
+    Route::post('/topics/register/{id}', [TopicController::class, 'register_1'])->name('topics.register.submit');
+    Route::post('/topics/storeStudent', [TopicController::class, 'storeStudent'])->name('topics.storeStudent');
+    Route::get('/topics/student', [TopicController::class, 'student'])->name('topics.student');
+    Route::get('/topics', [TopicController::class, 'index'])->name('topics.index');
+    Route::get('/topics/{id}', [TopicController::class, 'show'])->where('id', '[0-9]+')->name('topics.show');
+
+    // Internships
+    Route::get('/internships/student', [InternshipController::class, 'studentIndex'])->name('internships.studentIndex');
+    Route::get('/internships/register', [InternshipController::class, 'studentCreate'])->name('internships.studentCreate');
+    Route::post('/internships/register', [InternshipController::class, 'studentStore'])->name('internships.studentStore');
+    Route::get('/internships', [InternshipController::class, 'index'])->name('internships.index');
+
+    // Projects
+    Route::get('/projects/student', [ProjectController::class, 'student'])->name('projects.student');
+    Route::get('/projects', [ProjectController::class, 'index'])->name('projects.index');
+
+    // File Upload
+    Route::get('/file-upload', [FileUploadController::class, 'index'])->name('file-upload');
+    Route::get('/file-upload/project/{id}/edit', [FileUploadController::class, 'editProject'])->name('edit.project');
+    Route::post('/file-upload/project/{id}', [FileUploadController::class, 'storeProject'])->name('store.project');
+
+    // Documents
+    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
+    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
+    Route::get('/documents/{id}/edit', [DocumentController::class, 'edit'])->name('documents.edit');
+    Route::put('/documents/{id}', [DocumentController::class, 'update'])->name('documents.update');
+
+    // Students resource
+    Route::resource('students', StudentController::class);
+    Route::get('/students/search', [StudentController::class, 'search'])->name('students.search');
+});
 
 // Route dành cho Admin (Quản trị viên)
 Route::middleware(['auth', 'can:quantri'])->group(function () {
@@ -134,22 +174,8 @@ Route::middleware(['auth', 'can:giangvien'])->group(function () {
     Route::get('documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
 });
 
-// Route dành cho Sinh viên
-// Route::middleware(['auth', 'can:sinhvien'])->prefix('student')->name('student.')->group(function () {
-//     Route::resource('projects', ProjectController::class);
-// });
 
 
-//Route cho sinh vien
-// Route::middleware(['auth', 'can:sinhvien'])->group(function () {
-//     Route::resource('students', StudentController::class);
-//     Route::resource('documents',DocumentController::class);
-//     Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
-
-//     // Route::get('projects/{project}', [ProjectController::class, 'show'])->name('projects.show');
-//     Route::resource('projects', ProjectController::class);
-
-// });
 
 
 

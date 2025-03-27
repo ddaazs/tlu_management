@@ -70,7 +70,7 @@
                     @endif
 
                     <!-- Form upload file cho báo cáo thực tập -->
-                    <form action="{{ route('store.internship', $internships->id) }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('internships.store', $internships->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @if($errors->has('internship_file'))
                             <div class="alert alert-danger">
