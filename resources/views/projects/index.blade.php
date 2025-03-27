@@ -1,5 +1,6 @@
 
 @extends('layouts.app')
+@section('title', 'Danh Sách Đồ Án')
 @section('content')
 <style>
     
@@ -12,6 +13,9 @@
         font-size: 12px; /* Giảm cỡ chữ */
         font-weight: bold;
         white-space: nowrap; /* Tránh bị cắt chữ */
+    }
+    .custom-pagination .page-item {
+        margin: 0 5px; /* Tạo khoảng cách ngang giữa các nút */
     }
 </style>
 

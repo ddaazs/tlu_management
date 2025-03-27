@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Đăng Ký Đề Tài')
 @section('content')
 <div class="container">
     <h2 class="mb-4">Đăng Ký Đề Tài</h2>
@@ -7,6 +8,11 @@
     @if(session('success'))
         <div class="alert alert-success">
             {{ session('success') }}
+        </div>
+    @endif
+    @if(session('error'))
+        <div class="alert alert-warning">
+            {{ session('error') }}
         </div>
     @endif
 

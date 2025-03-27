@@ -1,11 +1,16 @@
 @extends('layouts.app')
 
+@section('title', 'Danh Sách Đề Tài')
 @section('content')
 <style>
     .table-container {
         max-width: 1200px;
         margin: 0 auto;
     }
+    .custom-pagination .page-item {
+        margin: 0 5px; /* Tạo khoảng cách ngang giữa các nút */
+    }
+    
 </style>
 <div class="container">
     <h2 class="text-center mb-4">Danh Sách Đề Tài</h2>
@@ -91,20 +96,29 @@
                     <div class="mb-3">
                         <label for="lecturer_id" class="form-label">Chọn Giảng Viên</label>
                         <select class="form-select" id="lecturer_id" name="lecturer_id" required>
+                            <option value="">-- Chọn giảng viên --</option>
                             @foreach($lecturers as $lecturer)
-                                <option value="{{ $lecturer->id }}">{{ $lecturer->full_name }}</option>
+                                <option value="{{ $lecturer->id }}" 
+                                    {{ old('lecturer_id') == $lecturer->id ? 'selected' : '' }}>
+                                    {{ $lecturer->full_name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
-
+                    
                     <div class="mb-3">
                         <label for="student_id" class="form-label">Chọn Sinh Viên</label>
-                        <select class="form-select" id="student_id" name="student_id" required>
+                        <select class="form-select" id="student_id" name="student_id">
+                            <option value="">-- Chọn sinh viên --</option>
                             @foreach($students as $student)
-                                <option value="{{ $student->id }}">{{ $student->full_name }}</option>
+                                <option value="{{ $student->id }}" 
+                                    {{ old('student_id') == $student->id ? 'selected' : '' }}>
+                                    {{ $student->full_name }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
+                    
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
@@ -119,10 +133,27 @@
     document.addEventListener("DOMContentLoaded", function() {
         document.querySelectorAll(".assign-btn").forEach(button => {
             button.addEventListener("click", function() {
-                document.getElementById("topic_id").value = this.getAttribute("data-topic-id");
+                let topicId = this.getAttribute("data-topic-id");
+                document.getElementById("topic_id").value = topicId;
+
+                // Gửi AJAX để lấy thông tin giảng viên và sinh viên đã phân công
+                fetch(`/topics/${topicId}/details`)
+                    .then(response => response.json())
+                    .then(data => {
+                        // Cập nhật giảng viên trong dropdown
+                        let lecturerSelect = document.getElementById("lecturer_id");
+                        lecturerSelect.value = data.lecturer_id ? data.lecturer_id : "";
+
+                        // Cập nhật sinh viên trong dropdown
+                        let studentSelect = document.getElementById("student_id");
+                        studentSelect.value = data.student_id ? data.student_id : "";
+                    })
+                    .catch(error => console.error("Lỗi khi tải dữ liệu:", error));
             });
         });
     });
 </script>
+
+
 
 @endsection
