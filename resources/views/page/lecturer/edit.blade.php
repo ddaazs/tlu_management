@@ -1,9 +1,9 @@
 @extends('layouts.app')
 
-@section('title', 'Tài khoản')
+@section('title', 'Chỉnh sửa giảng viên')
     
 @section('content')
-<div class="wrapper">
+<div class="">
     <h2 class="mb-3">Chỉnh sửa thông tin giảng viên</h2>
     
     <form method="POST" action="{{ route('lecturers.update', $lecturer->id) }}">
@@ -13,22 +13,34 @@
         <!-- Họ tên -->
         <div class="mb-3">
             <label for="full_name" class="form-label">Họ tên</label>
-            <input type="text" class="form-control" id="full_name" name="full_name" 
-                   value="{{ old('full_name', $lecturer->full_name) }}" required>
+            <input type="text" class="form-control @error('full_name') is-invalid @enderror" id="full_name" name="full_name" value="{{ old('full_name', $lecturer->full_name) }}" required>
+            @error('full_name')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
         <!-- Email -->
         <div class="mb-3">
             <label for="email" class="form-label">Email</label>
-            <input type="email" class="form-control" id="email" name="email" 
-                   value="{{ old('email', $lecturer->email) }}" required>
+            <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $lecturer->email) }}" required>
+            @error('email')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
         <!-- Số điện thoại -->
         <div class="mb-3">
             <label for="phone_number" class="form-label">Số điện thoại</label>
-            <input type="text" class="form-control" id="phone_number" name="phone_number" 
-                   value="{{ old('phone_number', $lecturer->phone_number) }}" required>
+            <input type="text" class="form-control @error('phone_number') is-invalid @enderror" id="phone_number" name="phone_number" value="{{ old('phone_number', $lecturer->phone_number) }}" required>
+            @error('email')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
         <!-- Học vị -->
@@ -40,6 +52,11 @@
                 <option value="Tiến sĩ" {{ $lecturer->degree == 'Tiến sĩ' ? 'selected' : '' }}>Tiến sĩ</option>
                 <option value="Giáo sư" {{ $lecturer->degree == 'Giáo sư' ? 'selected' : '' }}>Giáo sư</option>
             </select>
+            @error('degree')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
         <!-- Bộ môn -->
@@ -53,6 +70,25 @@
                     </option>
                 @endforeach
             </select>
+            @error('department_id')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
+        </div>
+
+        <div class="mb-3">
+            <label for="status" class="form-label">Trạng thái</label>
+            <select class="form-select" id="status" name="status" required>
+                <option value="Đang làm việc" {{ $lecturer->status == 'Đang làm việc' ? 'selected' : '' }}>Đang làm việc</option>
+                <option value="Đã nghỉ việc" {{ $lecturer->status == 'Đã nghỉ việc' ? 'selected' : '' }}>Đã nghỉ việc</option>
+                <option value="Chuyển công tác" {{ $lecturer->status == 'Chuyển công tác' ? 'selected' : '' }}>Chuyển công tác</option>
+            </select>
+            @error('status')
+                <div class="invalid-feedback">
+                    {{ $message }}
+                </div>
+            @enderror
         </div>
 
         <!-- Nút lưu -->

@@ -15,9 +15,19 @@ class Lecturer extends Model
         'email',
         'phone_number',
         'degree',
-        'department',
+        'department_id',
+        'status',
     ];
 
+    public function resign(){
+        $this->update(['status' => 'Đã nghỉ việc']);
+    }
+    public function active(){
+        $this->update(['status' => 'Đang làm việc']);
+    }
+    public function transfer(){
+        $this->update(['status' => 'Chuyển công tác']);
+    }
     public function user()
     {
         return $this->belongsTo(User::class, 'account_id');

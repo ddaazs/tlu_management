@@ -1,5 +1,6 @@
 
 @extends('layouts.app')
+@section('title', 'Danh Sách Đồ Án')
 @section('content')
 <style>
     
@@ -12,6 +13,9 @@
         font-size: 12px; /* Giảm cỡ chữ */
         font-weight: bold;
         white-space: nowrap; /* Tránh bị cắt chữ */
+    }
+    .custom-pagination .page-item {
+        margin: 0 5px; /* Tạo khoảng cách ngang giữa các nút */
     }
 </style>
 
@@ -61,14 +65,14 @@
                         <td>{{ $project->name }}</td>
                         <td class="text-truncate" style="max-width: 200px; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;">{{ $project->description }}</td>
                         <td>{{ optional($project->student)->full_name ?? 'N/A' }}</td>
-                        <td>{{ optional($project->lecturer)->full_name ?? 'N/A' }}</td>
+                        <td>{{ optional($project->instructor)->full_name ?? 'N/A' }}</td>
                         <td>
                             @if($project->status == 'Đang thực hiện')
                                 <span class="badge bg-warning">Đang thực hiện</span>
                             @elseif($project->status == 'Hoàn thành')
                                 <span class="badge bg-success">Hoàn thành</span>
                             @else
-                                <span class="bage badge-cancelled">Huỷ bỏ</span>
+                                <span class="badge badge-cancelled">Huỷ bỏ</span>
                             @endif
                         </td>
                     
@@ -79,12 +83,8 @@
     </div>
 
     <!-- Phân trang -->
-    <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item">{{ $projects->links('pagination::bootstrap-5') }}</li>
-            </ul>
-        </nav>
-    </div>
+    <div class="d-flex justify-content-center text-black">
+        {{ $projects->links() }}
+      </div>
 </div>
 @endsection

@@ -14,6 +14,7 @@ use App\Exports\LecturerExport;
 use App\Exports\ScoreExport;
 use App\Exports\StatusExport;
 use App\Exports\SubmissionExport;
+use Illuminate\View\View;
 
 class StatisticsController extends Controller
 {
@@ -30,7 +31,7 @@ class StatisticsController extends Controller
         // Thống kê theo giảng viên hướng dẫn (dựa trên dự án)
         $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
             ->groupBy('instructor_id')
-            ->with('instructor')
+            ->with('lecturer')
             ->get();
 
         // Thống kê theo điểm số đồ án (dựa trên bảng reviews, join projects)
@@ -112,7 +113,7 @@ class StatisticsController extends Controller
     {
         $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
             ->groupBy('instructor_id')
-            ->with('instructor')
+            ->with('lecturer')
             ->get();
 
         $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.lecturer', compact('byLecturer'));
@@ -173,7 +174,7 @@ class StatisticsController extends Controller
     public function viewLecturerPdf(){
         $byLecturer = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
             ->groupBy('instructor_id')
-            ->with('instructor')
+            ->with('lecturer')
             ->get();
 
         $pdf = app('dompdf.wrapper')->loadView('statistics.pdf.lecturer', compact('byLecturer'));

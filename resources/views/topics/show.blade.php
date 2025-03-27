@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Chi Tiết Đề Tài')
 @section('content')
 <div class="container mt-4">
     <div class="card p-4 shadow-sm" style="max-width: 700px; margin: auto;">
@@ -25,8 +26,13 @@
                 <span class="badge bg-danger">Từ chối</span>
             @endif
         </p>
-        <div class="mb-3 text-end">
+        {{-- <div class="mb-3 text-end">
             <a href="{{ route('topics.index') }}" class="btn btn-success">
+                <i class="fas fa-plus"></i> Quay lại
+            </a>
+        </div> --}}
+        <div class="mb-3 text-end">
+            <a href="{{ route(auth()->user()->role === 'sinhvien' ? 'topics.student' : 'topics.index') }}" class="btn btn-success">
                 <i class="fas fa-plus"></i> Quay lại
             </a>
         </div>

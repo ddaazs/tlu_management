@@ -13,7 +13,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::orderBy('updated_at', 'desc')->paginate(8);
+        $users = User::orderBy('created_at', 'desc')->paginate(8);
         return view('page.users.index', compact('users'));
     }
 
@@ -99,17 +99,16 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        //
-        if($user->students()->exists()) {
-            return back()->with('error', 'Không thể xóa do đang có sinh viên dùng tài khoản này.');
-        }
-
-        if($user->lecturers()->exists()) {
-            return back()->with('error', 'Không thể xóa do đang có giảng viên dùng tài khoản này.');
-        }
-
-        $user->delete();
-
-        return redirect()->route('users.index')->with('success', 'Xóa tài khoản thành công.');
+        $user->ban();
+        return redirect()->route('users.index')->with('success', 'Tài khoản đã khóa vĩnh viễn.');
     }
+    
+    public function toggleStatus(User $user)
+    {
+        $newStatus = $user->status === 'active' ? 'inactive' : 'active';
+        $user->update(['status' => $newStatus]);
+
+        return redirect()->route('users.index')->with('success', 'Cập nhật trạng thái tài khoản thành công.');
+    }
+
 }

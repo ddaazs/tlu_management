@@ -45,10 +45,20 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'email' => trans('Tài khoản hoặc mật khẩu không đúng'),
             ]);
         }
 
+        $user = Auth::user();
+
+        // Kiểm tra trạng thái tài khoản
+        if ($user->status === 'inactive' || $user->status === 'banned') {
+            Auth::logout();
+            throw ValidationException::withMessages([
+                'email' => 'Tài khoản của bạn đã bị khóa.',
+            ]);
+        }
+        
         RateLimiter::clear($this->throttleKey());
     }
 

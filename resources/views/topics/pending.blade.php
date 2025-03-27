@@ -1,5 +1,6 @@
 @extends('layouts.app')
 
+@section('title', 'Danh Sách Đề Tài Chờ Duyệt')
 @section('content')
 <div class="container">
     <h2 class="mb-4">Danh Sách Đề Tài Chờ Duyệt</h2>
@@ -53,15 +54,14 @@
                     <td>
                         <form action="{{ route('topics.changeStatus', ['id' => $topic->id, 'action' => 'approve']) }}" method="POST" class="d-inline">
                             @csrf
-                            @method('PATCH')
                             <button type="submit" class="btn btn-success">Duyệt</button>
                         </form>
                         
                         <form action="{{ route('topics.changeStatus', ['id' => $topic->id, 'action' => 'reject']) }}" method="POST" class="d-inline">
                             @csrf
-                            @method('PATCH')
                             <button type="submit" class="btn btn-danger">Từ chối</button>
                         </form>
+                        
                         
                     </td>
                 </tr>

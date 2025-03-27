@@ -1,7 +1,13 @@
 @extends('layouts.app')
 
+@section('title', 'Danh Sách Thực Tập')
 @section('content')
-
+<style>
+    .custom-pagination .page-item {
+        margin: 0 5px; /* Tạo khoảng cách ngang giữa các nút */
+    }
+    
+</style>
 
 <div class="container">
     <h2 class="text-center mb-4">Danh Sách Thực Tập</h2>
@@ -58,7 +64,11 @@
                     <td>
                         <a href="{{ route('internships.show', ['internship' => $internship->id]) }}" class="btn btn-primary btn-sm">Xem</a>
                         <a href="{{ route('internships.edit', ['internship' => $internship->id]) }}" class="btn btn-warning btn-sm">Sửa</a>
-                        
+                        {{-- <form action="{{ route('internships.destroy', ['internship' => $internship->id]) }}" method="POST" class="d-inline delete-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xoá không?')">Xoá</button>
+                        </form> --}}
                     </td>
                 </tr>
                 @endforeach
@@ -66,13 +76,9 @@
         </table>
     </div>
     
-    <div class="d-flex justify-content-center mt-4">
-        <nav aria-label="Page navigation">
-            <ul class="pagination">
-                <li class="page-item">{{ $internships->links('pagination::bootstrap-5') }}</li>
-            </ul>
-        </nav>
-    </div>
+    <div class="d-flex justify-content-center text-black">
+        {{ $internships->links() }}
+      </div>
 </div>
 
 

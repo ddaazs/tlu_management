@@ -40,7 +40,7 @@
                             </div>
                         @endif
                         <div class="mb-2">
-                            <label for="projectFile">Chọn file (pdf, doc, docx, zip - tối đa 5MB):</label>
+                            <label for="projectFile">Chọn file (pdf, doc, docx, zip - tối đa 20MB):</label>
                             <input type="file" name="project_file" id="projectFile" class="form-control" required>
                         </div>
                         <button type="submit" class="btn btn-success">Upload File</button>
@@ -78,7 +78,7 @@
                             </div>
                         @endif
                         <div class="mb-2">
-                            <label for="internshipFile">Chọn file (pdf, doc, docx, zip - tối đa 5MB):</label>
+                            <label for="internshipFile">Chọn file (pdf, doc, docx, zip - tối đa 20MB):</label>
                             <input type="file" name="internship_file" id="internshipFile" class="form-control" required>
                         </div>
                         <button type="submit" class="btn btn-success">Upload File</button>

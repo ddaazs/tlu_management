@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('status');
             $table->string('project_file')->nullable();
             $table->timestamps();
-
+        
             // Khóa ngoại
             $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
             $table->foreign('instructor_id')->references('id')->on('lecturers')->onDelete('cascade');

@@ -3,7 +3,7 @@
 @section('title', 'Tài khoản')
     
 @section('content')
-<div class="wrapper">
+<div class="">
     <h2>Chỉnh sửa tài khoản</h2>
     <form method="POST" action="{{ route('users.update', $user->id) }}">
         @csrf
