@@ -30,7 +30,7 @@ class DocumentController extends Controller
             'title.not_regex' => 'Tiêu đề không được chỉ chứa khoảng trắng.',
             'description.not_regex' => 'Nội dung không được chỉ chứa khoảng trắng.',
             'file.mimes' => 'Tệp phải có định dạng: pdf, doc hoặc docx.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 5MB.',
+            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
         ]);
 
         $filePath = $request->file('file')->store('documents', 'public');
@@ -80,7 +80,7 @@ class DocumentController extends Controller
             'title.not_regex' => 'Tiêu đề không được chỉ chứa khoảng trắng.',
             'description.not_regex' => 'Nội dung không được chỉ chứa khoảng trắng.',
             'file.mimes' => 'Tệp phải có định dạng: pdf, doc hoặc docx.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 5MB.',
+            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
         ]);
 
         if ($request->hasFile('file')) {

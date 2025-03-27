@@ -26,14 +26,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/observe-internships', [FileUploadController::class, 'reviewInternships'])->name('observe.internships');
     Route::get('/download/project/{id}', [FileUploadController::class, 'downloadProjectFile'])->name('download.project');
     Route::get('/download/internship/{id}', [FileUploadController::class, 'downloadInternshipFile'])->name('download.internship');
-    Route::get('/documents', [DocumentController::class, 'index'])->name('documents.index');
+    Route::resource('documents', DocumentController::class)->except(['show', 'destroy']);
+    Route::get('documents/{document}/download', [DocumentController::class, 'download'])->name('documents.download');
 
-// Route để hiển thị form upload tài liệu
-    Route::get('/documents/create', [DocumentController::class, 'create'])->name('documents.create');
-    Route::post('/documents', [DocumentController::class, 'store'])->name('documents.store');
-    Route::get('/documents/{id}/download', [DocumentController::class, 'download'])->name('documents.download');
-    Route::get('/edit/{id}', [DocumentController::class, 'edit'])->name('documents.edit');
-    Route::post('/update/{id}', [DocumentController::class, 'update'])->name('documents.update');
 });
 
 

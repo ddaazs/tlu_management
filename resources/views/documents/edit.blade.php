@@ -41,6 +41,15 @@
                 @if($document->file)
                     <p class="mt-2">Tệp hiện tại: <a href="{{ route('documents.download', $document->id) }}" target="_blank">Tải xuống</a></p>
                 @endif
+                <script>
+                    document.getElementById('fileInput').onchange = function () {
+                        const file = this.files[0];
+                        if (file.size > 20 * 1024 * 1024) { // 50MB
+                            alert('File quá lớn. Vui lòng chọn file nhỏ hơn 20MB.');
+                            this.value = '';
+                        }
+                    };
+                </script>
             </div>
 
             <button type="submit" class="btn btn-primary">Cập nhật</button>
