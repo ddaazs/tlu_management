@@ -14,7 +14,7 @@ class LecturerExport implements FromCollection, WithHeadings
         // Lấy dữ liệu thống kê theo giảng viên dựa trên projects:
         $data = Project::selectRaw('instructor_id, COUNT(DISTINCT student_id) as total_students')
             ->groupBy('instructor_id')
-            ->with('instructor')
+            ->with('lecturer')
             ->get();
 
         // Chuyển đổi dữ liệu để thay thế instructor_id bằng tên giảng viên

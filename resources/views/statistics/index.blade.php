@@ -69,7 +69,7 @@
                         <tbody>
                         @foreach($byLecturer as $record)
                             <tr>
-                                <td>{{ $record->instructor->full_name ?? 'N/A' }}</td>
+                                <td>{{ $record->lecturer->full_name ?? 'N/A' }}</td>
                                 <td>{{ $record->total_students }}</td>
                             </tr>
                         @endforeach
