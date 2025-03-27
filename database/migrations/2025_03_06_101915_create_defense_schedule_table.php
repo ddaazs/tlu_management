@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('defense_schedule', function (Blueprint $table) {
+        Schema::create('defense_schedules', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('project_id');
             $table->unsignedBigInteger('council_id'); // Giả định có bảng councils
             $table->dateTime('defense_date');
             $table->string('location');
-            $table->foreign('project_id')->references('id')->on('projects');
+            $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('defense_schedule');
+        Schema::dropIfExists('defense_schedules');
     }
 };

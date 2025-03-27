@@ -78,7 +78,7 @@ return [
     |
     */
 
-    'locale' => env('APP_LOCALE', 'en'),
+    'locale' => env('APP_LOCALE', 'vi'),
 
     'fallback_locale' => env('APP_FALLBACK_LOCALE', 'en'),
 
@@ -122,5 +122,14 @@ return [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    // 'providers' => [
+    //     Maatwebsite\Excel\ExcelServiceProvider::class,
+    // ],
+
+    // 'aliases' => [
+    //     'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+    // ],
+
 
 ];

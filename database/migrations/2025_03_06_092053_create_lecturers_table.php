@@ -16,11 +16,12 @@ return new class extends Migration
             $table->unsignedBigInteger('account_id');
             $table->foreign('account_id')->references('id')->on('users');
             $table->string('full_name');
-            $table->string('email')->unique();
+            $table->string('email');
             $table->string('phone_number');
             $table->string('degree');
             $table->unsignedBigInteger('department_id');
             $table->foreign('department_id')->references('id')->on('departments');
+            $table->enum('status', ['Đang làm việc', 'Đã nghỉ việc', 'Chuyển công tác'])->default('Đang làm việc');
             $table->timestamps();
         });
     }
