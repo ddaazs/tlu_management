@@ -38,7 +38,7 @@ class InternshipController extends Controller
         }
     
         // Lấy danh sách thực tập của sinh viên hiện tại
-        $internships = Internship::with(['student', 'company', 'instructor'])
+        $internships = Internship::with(['student', 'company', 'lecturer'])
             ->where('student_id', $student->id)
             ->paginate(10);
     
@@ -170,51 +170,58 @@ class InternshipController extends Controller
 
     // 🔹 Xử lý đăng ký thực tập (Sinh viên)
     public function studentStore(Request $request)
-    {
-        if (!Gate::allows('sinhvien')) {
-            abort(403, 'Chỉ sinh viên mới có thể đăng ký thực tập.');
-        }
-    
-        // Lấy thông tin sinh viên từ bảng students dựa trên account_id
-        $student = Student::where('account_id', auth()->id())->first();
-    
-        if (!$student) {
-            return abort(404, 'Không tìm thấy thông tin sinh viên.');
-        }
-    
-        // 🔍 Kiểm tra nếu sinh viên đã có thực tập
-        $existingInternship = Internship::where('student_id', $student->id)->exists();
-    
-        if ($existingInternship) {
-            return redirect()->back()->with('error', 'Bạn đã có một thực tập, không thể đăng ký thêm.');
-        }
-    
-        // Kiểm tra dữ liệu đầu vào
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required',
-            'company_id' => 'required|exists:internship_companies,id',
-            'instructor_id' => 'required|exists:lecturers,id',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after:start_date',
-            'status' => 'required|string',
-        ]);
-    
-        // Tạo thực tập mới cho sinh viên
-        Internship::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'student_id' => $student->id, // 🔥 Lấy đúng student_id
-            'company_id' => $request->company_id,
-            'instructor_id' => $request->instructor_id,
-            'start_date' => $request->start_date,
-            'end_date' => $request->end_date,
-            'status' => $request->status,
-        ]);
-    
-        // Chuyển hướng về danh sách thực tập và hiển thị thông báo thành công
-        return redirect()->route('internships.studentIndex')->with('success', 'Bạn đã đăng ký thực tập thành công!');
+{
+    if (!Gate::allows('sinhvien')) {
+        abort(403, 'Chỉ sinh viên mới có thể đăng ký thực tập.');
     }
+
+    // 🔍 Lấy thông tin sinh viên từ bảng students dựa trên account_id
+    $student = Student::where('account_id', auth()->id())->first();
+
+    if (!$student) {
+        return abort(404, 'Không tìm thấy thông tin sinh viên.');
+    }
+
+    // 🔍 Kiểm tra nếu sinh viên đã có thực tập
+    if (Internship::where('student_id', $student->id)->exists()) {
+        return redirect()->back()->with('error', 'Bạn đã có một thực tập, không thể đăng ký thêm.');
+    }
+
+    // ✅ Kiểm tra dữ liệu đầu vào
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'description' => 'required|string|min:10',
+        'company_id' => 'required|exists:internship_companies,id',
+        'instructor_id' => 'required|exists:lecturers,id',
+        'start_date' => [
+            'required',
+            'date',
+            'after_or_equal:' . now()->format('Y-m-d') // Không được nhỏ hơn ngày hôm nay
+        ],
+        'end_date' => [
+            'required',
+            'date',
+            'after:start_date' // Ngày kết thúc phải sau ngày bắt đầu
+        ],
+        'status' => 'required|string|in:Chưa bắt đầu,Đang thực tập,Hoàn thành',
+    ]);
+
+    // 🔥 Tạo thực tập mới cho sinh viên
+    Internship::create([
+        'title' => $request->title,
+        'description' => $request->description,
+        'student_id' => $student->id, // 🔥 Lấy đúng student_id
+        'company_id' => $request->company_id,
+        'instructor_id' => $request->instructor_id,
+        'start_date' => $request->start_date,
+        'end_date' => $request->end_date,
+        'status' => $request->status,
+    ]);
+
+    // ✅ Chuyển hướng về danh sách thực tập với thông báo thành công
+    return redirect()->route('internships.studentIndex')->with('success', 'Bạn đã đăng ký thực tập thành công!');
+}
+
     
 
 }
