@@ -76,7 +76,7 @@ class ProjectController extends Controller
     public function create()
     {
         $students = Student::all();
-        $instructor = Lecturer::all();
+        $lecturer = Lecturer::all();
         return view('projects.create', compact('students', 'lecturer'));
     }
 
