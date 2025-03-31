@@ -85,6 +85,8 @@ Route::middleware(['auth', 'can:quantri'])->group(function () {
     Route::get('/import/lecturers', [ImportController::class, 'showLecturerImportForm'])->name('import.lecturers.form');
     Route::post('/import/lecturers', [ImportController::class, 'importLecturers'])->name('import.lecturers');
 
+    Route::get('students/search', [StudentController::class, 'search'])->name('students.search');
+
     // Quản lý chủ đề
     Route::get('/topics/pending', [TopicController::class, 'pending'])->name('topics.pending');
     Route::post('/topics/{topic}/approve', [TopicController::class, 'approve'])->name('topics.approve');
