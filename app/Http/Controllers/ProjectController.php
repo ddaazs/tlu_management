@@ -44,7 +44,7 @@ class ProjectController extends Controller
         }
 
         // Lấy các dự án có eager load quan hệ student và instructor
-        $query = Project::with(['student', 'instructor'])
+        $query = Project::with(['student', 'lecturer'])
                     ->where('student_id', $student->id);
 
         // Lọc theo tên dự án nếu có yêu cầu tìm kiếm
