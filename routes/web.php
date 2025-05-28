@@ -19,7 +19,7 @@ use Database\Seeders\TopicSeeder;
 Route::get('/', fn() => redirect('home'));
 Route::get('/home', fn() => view('page.home'))->middleware(['auth', 'verified'])->name('home');
 
-    
+
 
 
 Route::middleware(['auth'])->group(function () {
@@ -195,10 +195,10 @@ Route::middleware(['auth', 'can:giangvien'])->group(function () {
 
 
 
-Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::prefix('profile')->group(function () {
+    Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 
