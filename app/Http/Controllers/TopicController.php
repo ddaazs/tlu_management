@@ -11,11 +11,17 @@ use Illuminate\Support\Facades\Gate;
 
 class TopicController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'can:sinhvien']);
+        $this->middleware('can:quantri')->only('search');
+    }
+
     /**
      * Hiển thị danh sách đề tài.
      */
     public function index()
-    {   
+    {
         $topics = Topic::with('lecturer')->orderBy('created_at', 'desc')->paginate(10);
         $lecturers = Lecturer::all();
         $students = Student::all();
@@ -30,7 +36,7 @@ class TopicController extends Controller
         // Nếu không tìm thấy sinh viên, báo lỗi
         if (!$student) {
             return abort(404, 'Không tìm thấy thông tin sinh viên');
-        }   
+        }
 
         // Lấy đề tài sinh viên đã đăng ký (nếu có)
         $registeredTopic = Topic::where('student_id', $student->id)->first();

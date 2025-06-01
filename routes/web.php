@@ -190,11 +190,6 @@ Route::middleware(['auth', 'can:giangvien'])->group(function () {
 
 });
 
-
-
-
-
-
 Route::prefix('profile')->group(function () {
     Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');

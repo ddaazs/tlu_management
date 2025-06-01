@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth']);
+    }
+
     public function index()
     {
         $documents = Document::orderBy('updated_at', 'desc')->paginate(10);

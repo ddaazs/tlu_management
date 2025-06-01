@@ -26,7 +26,7 @@ class FileUploadController extends Controller
     public function index()
     {
         // Lấy thông tin người dùng đã đăng nhập
-        $user = auth()->user();
+        $user = auth('web')->user();
         if (!$user) {
             abort(403, 'Bạn cần đăng nhập.');
         }

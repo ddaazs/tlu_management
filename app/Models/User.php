@@ -58,10 +58,7 @@ class User extends Authenticatable
         $this->update(['status' => 'active']);
     }
 
-    public function ban()
-    {
-        $this->update(['status' => 'banned']);
-    }
+
 
     public function students()
     {
