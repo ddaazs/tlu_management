@@ -2,19 +2,32 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Topic;
 use App\Models\Lecturer;
-use App\Models\Student;
 use App\Models\Project;
+use App\Models\Student;
+use App\Models\Topic;
+use App\Services\Core\LectureService;
+use App\Services\Core\StudentService;
+use App\Services\Core\TopicService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 
 class TopicController extends Controller
 {
-    public function __construct()
-    {
+    protected $topicService;
+    protected $studentService;
+    protected $lecturerService;
+
+    public function __construct(
+        TopicService $topicService,
+        StudentService $studentService,
+        LectureService $lecturerService
+    ) {
         $this->middleware(['auth', 'can:sinhvien']);
         $this->middleware('can:quantri')->only('search');
+        $this->topicService = $topicService;
+        $this->studentService = $studentService;
+        $this->lecturerService = $lecturerService;
     }
 
     /**
@@ -22,34 +35,26 @@ class TopicController extends Controller
      */
     public function index()
     {
-        $topics = Topic::with('lecturer')->orderBy('created_at', 'desc')->paginate(10);
-        $lecturers = Lecturer::all();
-        $students = Student::all();
+        $topics = $this->topicService->getTopics();
+        $lecturers = $this->lecturerService->getLecture();
+        $students = $this->studentService->getStudent();
+
         return view('topics.index', compact('topics', 'lecturers', 'students'));
     }
 
     public function student()
     {
-        // Lấy thông tin sinh viên hiện tại
         $student = Student::where('account_id', auth()->id())->first();
 
-        // Nếu không tìm thấy sinh viên, báo lỗi
         if (!$student) {
-            return abort(404, 'Không tìm thấy thông tin sinh viên');
+            abort(404, 'Không tìm thấy thông tin sinh viên');
         }
 
-        // Lấy đề tài sinh viên đã đăng ký (nếu có)
-        $registeredTopic = Topic::where('student_id', $student->id)->first();
-
-        // Lấy danh sách các đề tài chưa có sinh viên đăng ký
-        $topics = Topic::with('lecturer')
-                    ->whereNull('student_id')  // Chỉ lấy đề tài chưa có sinh viên
-                    ->orderBy('created_at', 'desc')
-                    ->paginate(10);
+        $registeredTopic = $this->topicService->getStudentTopic($student->id);
+        $topics = $this->topicService->getAvailableTopics();
 
         return view('topics.student', compact('topics', 'registeredTopic'));
     }
-
 
     public function show($id)
     {
@@ -63,7 +68,7 @@ class TopicController extends Controller
             abort(403, 'Bạn không có quyền xem danh sách chờ duyệt.');
         }
 
-        $topics = Topic::where('status', 'pending')->get();
+        $topics = $this->topicService->getPendingTopics();
         return view('topics.pending', compact('topics'));
     }
 
@@ -73,8 +78,7 @@ class TopicController extends Controller
             return response()->json(['success' => false, 'message' => 'Bạn không có quyền duyệt đề tài.'], 403);
         }
 
-        $topic->update(['status' => 'approved']);
-
+        $this->topicService->updateTopicStatus($topic->id, 'approved');
         return redirect()->route('topics.pending')->with('success', 'Đề tài đã được duyệt!');
     }
 
@@ -84,8 +88,7 @@ class TopicController extends Controller
             return response()->json(['success' => false, 'message' => 'Bạn không có quyền từ chối đề tài.'], 403);
         }
 
-        $topic->update(['status' => 'rejected']);
-
+        $this->topicService->updateTopicStatus($topic->id, 'rejected');
         return redirect()->route('topics.pending')->with('success', 'Đề tài đã bị từ chối!');
     }
 
@@ -120,7 +123,7 @@ class TopicController extends Controller
         ]);
 
         $topic = Topic::findOrFail($request->topic_id);
-         // Kiểm tra trạng thái của đề tài
+        // Kiểm tra trạng thái của đề tài
         if ($topic->status !== 'approved') {
             return redirect()->route('topics.index')->with('error', 'Chỉ có thể phân công các đề tài đã được duyệt.');
         }
@@ -159,8 +162,7 @@ class TopicController extends Controller
             'lecturer_id' => 'required|exists:lecturers,id',
         ]);
 
-        $topic = Topic::create($validatedData);
-
+        $this->topicService->createTopic($validatedData);
         return redirect()->route('topics.index')->with('success', 'Đề tài đã được lưu thành công!');
     }
 
@@ -212,7 +214,6 @@ class TopicController extends Controller
         return redirect()->route('topics.student')->with('success', 'Đăng ký đề tài thành công!');
     }
 
-
     public function register_1(Request $request, $id)
     {
         // Lấy thông tin sinh viên hiện tại
@@ -238,7 +239,6 @@ class TopicController extends Controller
         return redirect()->back()->with('success', 'Đăng ký đề tài thành công!');
     }
 
-
     public function edit($id)
     {
         if (!Gate::allows('giangvien') && !Gate::allows('quantri')) {
@@ -257,15 +257,13 @@ class TopicController extends Controller
             abort(403, 'Bạn không có quyền chỉnh sửa đề tài.');
         }
 
-        $request->validate([
+        $validatedData = $request->validate([
             'title' => 'required|string|max:255',
             'description' => 'required|string',
             'lecturer_id' => 'required|exists:lecturers,id',
         ]);
 
-        $topic = Topic::findOrFail($id);
-        $topic->update($request->all());
-
+        $this->topicService->updateTopic($id, $validatedData);
         return redirect()->route('topics.index')->with('success', 'Đề tài đã được cập nhật thành công!');
     }
 
@@ -275,9 +273,7 @@ class TopicController extends Controller
             abort(403, 'Bạn không có quyền xóa đề tài.');
         }
 
-        $topic = Topic::findOrFail($id);
-        $topic->delete();
-
+        $this->topicService->deleteTopic($id);
         return redirect()->route('topics.index')->with('success', 'Đề tài đã được xóa!');
     }
 }

@@ -3,9 +3,10 @@
 namespace App\Services\Core;
 
 use App\Repositories\Contracts\IUserRepository;
+use App\Services\BaseService;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
-class UserService
+class UserService extends BaseService
 {
     protected IUserRepository $userRepository;
 
