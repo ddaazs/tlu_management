@@ -7,17 +7,16 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\TopicController;
-use App\Http\Controllers\InternshipCompanyController;
 use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\FileUploadController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\InternshipController;
-use Database\Seeders\TopicSeeder;
+use App\Http\Controllers\HomeController;
 
 
-Route::get('/', fn() => redirect('home'));
-Route::get('/home', fn() => view('page.home'))->middleware(['auth', 'verified'])->name('home');
+Route::get('/', [HomeController::class, 'redirectHome']);
+Route::get('/home', [HomeController::class, 'returnHome'])->middleware(['auth', 'verified'])->name('home');
 
 
 

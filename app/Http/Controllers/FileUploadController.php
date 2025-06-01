@@ -2,20 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lecturer;
+use App\Services\Core\FileUploadService;
 use Illuminate\Http\Request;
-use App\Models\Student;
-use App\Models\Project;
-use App\Models\Internship;
 
 class FileUploadController extends Controller
 {
+    protected $fileUploadService;
+
     /**
      * Áp dụng middleware auth để đảm bảo chỉ có user đăng nhập mới được truy cập.
      */
-    public function __construct()
+    public function __construct(FileUploadService $fileUploadService)
     {
         $this->middleware('auth');
+        $this->fileUploadService = $fileUploadService;
     }
 
     /**
@@ -25,28 +25,8 @@ class FileUploadController extends Controller
      */
     public function index()
     {
-        // Lấy thông tin người dùng đã đăng nhập
-        $user = auth('web')->user();
-        if (!$user) {
-            abort(403, 'Bạn cần đăng nhập.');
-        }
-
-        // Lấy thông tin sinh viên dựa trên account_id của user
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        // Lấy danh sách dự án và báo cáo của sinh viên
-        $projects = Project::where('student_id', $student->id)
-            ->orderBy('updated_at', 'desc')
-            ->first();
-        $internships = Internship::where('student_id', $student->id)
-            ->orderBy('updated_at', 'desc')
-            ->first();
-//        dd($projects, $internships);
-
-        return view('file-upload.index', compact('projects', 'internships'));
+        $data = $this->fileUploadService->getStudentFiles(auth()->id());
+        return view('file-upload.index', $data);
     }
 
     /**
@@ -57,17 +37,8 @@ class FileUploadController extends Controller
      */
     public function editProject($id)
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $project = Project::findOrFail($id);
-        if ($project->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền truy cập dự án này.');
-        }
-        return view('file-upload.edit-project', compact('project'));
+        $data = $this->fileUploadService->getStudentFiles(auth()->id());
+        return view('file-upload.edit-project', ['project' => $data['projects']]);
     }
 
     /**
@@ -79,34 +50,17 @@ class FileUploadController extends Controller
      */
     public function storeProject(Request $request, $id)
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $project = Project::findOrFail($id);
-        if ($project->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền upload file cho dự án này.');
-        }
-
-        // Validate file upload: sử dụng input name 'project_file'
         $request->validate([
             'project_file' => 'required|file|mimes:pdf,doc,docx,zip|max:20480',
         ], [
-            'file.mimes' => 'Tệp phải có định dạng: pdf, doc, docx hoặc zip.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
+            'project_file.mimes' => 'Tệp phải có định dạng: pdf, doc, docx hoặc zip.',
+            'project_file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
         ]);
 
-        // Lưu file vào thư mục 'projects' trên disk 'public'
-        $path = $request->file('project_file')->store('projects', 'public');
+        $this->fileUploadService->uploadProjectFile($id, $request->file('project_file'));
 
-        // Cập nhật trường project_file cho dự án
-        $project->update([
-            'project_file' => $path,
-        ]);
-
-        return redirect()->route('file-upload')->with('success', 'File dự án đã được upload thành công.');
+        return redirect()->route('file-upload')
+            ->with('success', 'File dự án đã được upload thành công.');
     }
 
     /**
@@ -117,17 +71,8 @@ class FileUploadController extends Controller
      */
     public function editInternship($id)
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $internship = Internship::findOrFail($id);
-        if ($internship->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền truy cập báo cáo này.');
-        }
-        return view('file-upload.edit-internship', compact('internship'));
+        $data = $this->fileUploadService->getStudentFiles(auth()->id());
+        return view('file-upload.edit-internship', ['internship' => $data['internships']]);
     }
 
     /**
@@ -139,63 +84,35 @@ class FileUploadController extends Controller
      */
     public function storeInternship(Request $request, $id)
     {
-        $user = auth()->user();
-        $student = Student::where('account_id', $user->id)->first();
-        if (!$student) {
-            abort(404, 'Không tìm thấy thông tin sinh viên của bạn.');
-        }
-
-        $internship = Internship::findOrFail($id);
-        if ($internship->student_id != $student->id) {
-            abort(403, 'Bạn không có quyền upload file cho báo cáo này.');
-        }
-
-        // Validate file upload: sử dụng input name 'internship_file'
         $request->validate([
             'internship_file' => 'required|file|mimes:pdf,doc,docx,zip|max:20480',
         ], [
-            'file.mimes' => 'Tệp phải có định dạng: pdf, doc, docx hoặc zip.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
+            'internship_file.mimes' => 'Tệp phải có định dạng: pdf, doc, docx hoặc zip.',
+            'internship_file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
         ]);
 
-        // Lưu file vào thư mục 'internships' trên disk 'public'
-        $path = $request->file('internship_file')->store('internships', 'public');
+        $this->fileUploadService->uploadInternshipFile($id, $request->file('internship_file'));
 
-        // Cập nhật trường report_file cho báo cáo thực tập
-        $internship->update([
-            'report_file' => $path,
-        ]);
-
-        return redirect()->route('file-upload')->with('success', 'Báo cáo thực tập đã được upload thành công.');
-    }
-
-    public function reviewProjects()
-    {
-        $user = auth()->user();
-        // Lấy thông tin giảng viên dựa trên account_id của user
-        $lecturer = Lecturer::where('account_id', $user->id)->first();
-        if (!$lecturer) {
-            abort(404, 'Không tìm thấy thông tin giảng viên của bạn.');
-        }
-        // Lấy danh sách đồ án của các sinh viên mà giáo viên hướng dẫn
-        $projects = Project::where('instructor_id', $lecturer->id)->paginate(5);
-        return view('file-upload.observeproject', compact('projects'));
+        return redirect()->route('file-upload')
+            ->with('success', 'Báo cáo thực tập đã được upload thành công.');
     }
 
     /**
-     * Hiển thị danh sách báo cáo thực tập có phân trang (5 bản ghi/trang) dành cho giáo viên.
-     *
-     * @return \Illuminate\View\View
+     * Display lecturer's projects
+     */
+    public function reviewProjects()
+    {
+        $data = $this->fileUploadService->getLecturerProjects(auth()->id());
+        return view('file-upload.observeproject', $data);
+    }
+
+    /**
+     * Display lecturer's internships
      */
     public function reviewInternships()
     {
-        $user = auth()->user();
-        $lecturer = Lecturer::where('account_id', $user->id)->first();
-        if (!$lecturer) {
-            abort(404, 'Không tìm thấy thông tin giảng viên của bạn.');
-        }
-        $internships = Internship::where('instructor_id', $lecturer->id)->paginate(5);
-        return view('file-upload.observeinternship', compact('internships'));
+        $data = $this->fileUploadService->getLecturerInternships(auth()->id());
+        return view('file-upload.observeinternship', $data);
     }
 
     /**
@@ -206,12 +123,7 @@ class FileUploadController extends Controller
      */
     public function downloadProjectFile($id)
     {
-        $project = Project::findOrFail($id);
-        if (!$project->project_file) {
-            abort(404, 'File không tồn tại.');
-        }
-        $path = storage_path('app/public/' . $project->project_file);
-        return response()->download($path);
+        return $this->fileUploadService->downloadProjectFile($id);
     }
 
     /**
@@ -222,11 +134,6 @@ class FileUploadController extends Controller
      */
     public function downloadInternshipFile($id)
     {
-        $internship = Internship::findOrFail($id);
-        if (!$internship->report_file) {
-            abort(404, 'File không tồn tại.');
-        }
-        $path = storage_path('app/public/' . $internship->report_file);
-        return response()->download($path);
+        return $this->fileUploadService->downloadInternshipFile($id);
     }
 }

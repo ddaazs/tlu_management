@@ -2,13 +2,18 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Core\ImportService;
 use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Imports\StudentImport;
-use App\Imports\LecturerImport;
 
 class ImportController extends Controller
 {
+    protected $importService;
+
+    public function __construct(ImportService $importService)
+    {
+        $this->importService = $importService;
+    }
+
     /**
      * Import danh sách sinh viên qua file Excel.
      */
@@ -18,7 +23,7 @@ class ImportController extends Controller
             'file' => 'required|file|mimes:xlsx,xls,csv|max:10240' // Giới hạn file 10MB
         ]);
 
-        Excel::import(new StudentImport, $request->file('file'));
+        $this->importService->importStudents($request->file('file'));
 
         return redirect()->back()->with('success', 'Danh sách sinh viên đã được import thành công.');
     }
@@ -30,13 +35,14 @@ class ImportController extends Controller
     {
         return view('import.lecturers');
     }
+
     public function importLecturers(Request $request)
     {
         $request->validate([
             'file' => 'required|file|mimes:xlsx,xls,csv|max:10240'
         ]);
 
-        Excel::import(new LecturerImport, $request->file('file'));
+        $this->importService->importLecturers($request->file('file'));
 
         return redirect()->back()->with('success', 'Danh sách giảng viên đã được import thành công.');
     }

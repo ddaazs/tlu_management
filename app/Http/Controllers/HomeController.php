@@ -2,20 +2,33 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\Core\HomeService;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
-    public function __construct()
+    protected $homeService;
+
+    public function __construct(HomeService $homeService)
     {
         $this->middleware(['auth', 'verified'])->only('home');
+        $this->homeService = $homeService;
     }
 
-    public function redirectHome(){
-        redirect()->route('home');
+    /**
+     * Redirect to home page
+     */
+    public function redirectHome()
+    {
+        return redirect()->route('home');
     }
 
-    public function returnHome(){
-        return view('page.home');
+    /**
+     * Show home page
+     */
+    public function returnHome()
+    {
+        $data = $this->homeService->getHomeData();
+        return view('page.home', $data);
     }
 }

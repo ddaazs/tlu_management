@@ -2,82 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Lecturer;
-use App\Models\Project;
-use App\Models\Student;
+use App\Services\Core\ProjectService;
+use App\Services\Core\StudentService;
 use Illuminate\Http\Request;
+
 class ProjectController extends Controller
 {
+    protected $projectService;
+    protected $studentService;
+
+    public function __construct(
+        ProjectService $projectService,
+        StudentService $studentService
+    ) {
+        $this->projectService = $projectService;
+        $this->studentService = $studentService;
+    }
+
     /**
      * Hiển thị danh sách đồ án
      */
     public function index(Request $request)
     {
-        $query = Project::with(['student', 'lecturer']);
+        $filters = $request->only(['search', 'status']);
+        $projects = $this->projectService->getAllProjects($filters);
 
-        // Lọc theo tên hoặc trạng thái nếu có yêu cầu tìm kiếm
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Áp dụng phân trang (5 bản ghi trên mỗi trang)
-        $projects = $query->paginate(10);
-
-        // Kiểm tra nếu là request AJAX thì trả về JSON (hỗ trợ tìm kiếm động)
         if ($request->ajax()) {
             return response()->json($projects);
         }
 
         return view('projects.index', compact('projects'));
     }
+
     public function student(Request $request)
     {
-        // Lấy thông tin sinh viên từ bảng student dựa trên account_id (user_id hiện tại)
-        $student = Student::where('account_id', auth()->id())->first();
+        $student = $this->studentService->getStudentByAccountId(auth()->id());
 
-        // Kiểm tra nếu không tìm thấy sinh viên
         if (!$student) {
             return abort(404, 'Không tìm thấy thông tin sinh viên');
         }
 
-        // Lấy các dự án có eager load quan hệ student và instructor
-        $query = Project::with(['student', 'lecturer'])
-                    ->where('student_id', $student->id);
+        $filters = $request->only(['search', 'status']);
+        $projects = $this->projectService->getStudentProjects($student->id, $filters);
 
-        // Lọc theo tên dự án nếu có yêu cầu tìm kiếm
-        if ($request->has('search')) {
-            $query->where('name', 'like', '%' . $request->search . '%');
-        }
-
-        // Lọc theo trạng thái nếu có yêu cầu
-        if ($request->has('status')) {
-            $query->where('status', $request->status);
-        }
-
-        // Phân trang (10 bản ghi mỗi trang)
-        $projects = $query->paginate(10);
-
-        // Nếu request là AJAX thì trả về JSON hỗ trợ tìm kiếm động
         if ($request->ajax()) {
-            return response()->json($projects->isEmpty() ? ['message' => 'Sinh viên chưa có đồ án nào'] : $projects);
+            return response()->json(
+                $projects->isEmpty()
+                    ? ['message' => 'Sinh viên chưa có đồ án nào']
+                    : $projects
+            );
         }
 
-        // ✅ Đảm bảo luôn truyền $projects vào view, ngay cả khi rỗng
         return view('projects.student', compact('projects'));
     }
 
-    
     /**
      * Hiển thị form tạo đồ án
      */
     public function create()
     {
-        $students = Student::all();
-        $lecturer = Lecturer::all();
-        return view('projects.create', compact('students', 'lecturer'));
+        $formData = $this->projectService->getFormData();
+        return view('projects.create', $formData);
     }
 
     /**
@@ -85,7 +70,7 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required',
             'student_id' => 'required|exists:students,id',
@@ -93,37 +78,42 @@ class ProjectController extends Controller
             'status' => 'required|string'
         ]);
 
-        Project::create($request->all());
+        $this->projectService->createProject($validatedData);
 
-        return redirect()->route('projects.index')->with('success', 'Đồ án đã được tạo thành công!');
+        return redirect()
+            ->route('projects.index')
+            ->with('success', 'Đồ án đã được tạo thành công!');
     }
 
     /**
      * Hiển thị chi tiết một đồ án
      */
-    public function show(Student $student)
+    public function show(int $id)
     {
-        $project = Project::with(['student', 'lecturer'])->findOrFail($id);
+        $project = $this->projectService->getProjectById($id);
         return view('projects.show', compact('project'));
     }
 
     /**
      * Hiển thị form chỉnh sửa đồ án
      */
-    public function edit($id)
+    public function edit(int $id)
     {
-        $project = Project::findOrFail($id);
-        $students = Student::all();
-        $instructors = Lecturer::all();
-        return view('projects.edit', compact('project', 'students', 'lecturer'));
+        $project = $this->projectService->getProjectById($id);
+        $formData = $this->projectService->getFormData();
+
+        return view('projects.edit', array_merge(
+            ['project' => $project],
+            $formData
+        ));
     }
 
     /**
      * Cập nhật đồ án trong database
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
-        $request->validate([
+        $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required',
             'student_id' => 'required|exists:students,id',
@@ -131,20 +121,22 @@ class ProjectController extends Controller
             'status' => 'required|string'
         ]);
 
-        $project = Project::findOrFail($id);
-        $project->update($request->all());
+        $this->projectService->updateProject($id, $validatedData);
 
-        return redirect()->route('projects.index')->with('success', 'Đồ án đã được cập nhật thành công!');
+        return redirect()
+            ->route('projects.index')
+            ->with('success', 'Đồ án đã được cập nhật thành công!');
     }
 
     /**
      * Xóa đồ án khỏi database
      */
-    public function destroy($id)
+    public function destroy(int $id)
     {
-        $project = Project::findOrFail($id);
-        $project->delete();
+        $this->projectService->deleteProject($id);
 
-        return redirect()->route('projects.index')->with('success', 'Đồ án đã bị xóa!');
+        return redirect()
+            ->route('projects.index')
+            ->with('success', 'Đồ án đã bị xóa!');
     }
 }

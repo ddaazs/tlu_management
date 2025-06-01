@@ -6,7 +6,7 @@ use App\Models\Lecturer;
 use App\Models\Project;
 use App\Models\Student;
 use App\Models\Topic;
-use App\Services\Core\LectureService;
+use App\Services\Core\LecturerService;
 use App\Services\Core\StudentService;
 use App\Services\Core\TopicService;
 use Illuminate\Http\Request;
@@ -21,7 +21,7 @@ class TopicController extends Controller
     public function __construct(
         TopicService $topicService,
         StudentService $studentService,
-        LectureService $lecturerService
+        LecturerService $lecturerService
     ) {
         $this->middleware(['auth', 'can:sinhvien']);
         $this->middleware('can:quantri')->only('search');

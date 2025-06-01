@@ -2,108 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Document;
+use App\Http\Requests\Document\StoreDocumentRequest;
+use App\Http\Requests\Document\UpdateDocumentRequest;
+use App\Services\Core\DocumentService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 
 class DocumentController extends Controller
 {
-    public function __construct()
+    protected $documentService;
+
+    public function __construct(DocumentService $documentService)
     {
         $this->middleware(['auth']);
+        $this->documentService = $documentService;
     }
 
+    /**
+     * Display a listing of documents
+     */
     public function index()
     {
-        $documents = Document::orderBy('updated_at', 'desc')->paginate(10);
+        $documents = $this->documentService->getAllDocuments();
         return view('documents.index', compact('documents'));
     }
 
+    /**
+     * Show the form for creating a new document
+     */
     public function create()
     {
         return view('documents.create');
     }
 
-    public function store(Request $request)
+    /**
+     * Store a newly created document
+     */
+    public function store(StoreDocumentRequest $request)
     {
-        $request->validate([
-            'title' => 'required|string|max:255|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
-            'description' => 'nullable|string|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
-            'file' => 'required|file|mimes:pdf,doc,docx,zip|max:20480'
-        ], [
-            'title.required' => 'Tiêu đề không được chỉ bao gồm khoảng trắng!',
-            'title.not_regex' => 'Tiêu đề không được chỉ chứa khoảng trắng.',
-            'description.not_regex' => 'Nội dung không được chỉ chứa khoảng trắng.',
-            'file.mimes' => 'Tệp phải có định dạng: pdf, doc hoặc docx.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
-        ]);
+        $this->documentService->createDocument(
+            $request->only(['title', 'description']),
+            $request->file('file')
+        );
 
-        $filePath = $request->file('file')->store('documents', 'public');
-
-        Document::create([
-            'title' => $request->title,
-            'description' => $request->description,
-            'file' => $filePath,
-        ]);
-
-        return redirect()->route('documents.index')->with('success', 'Tài liệu đã được upload thành công.');
-    }
-
-    public function download($id)
-    {
-        $document = Document::findOrFail($id);
-
-        if (Storage::disk('public')->exists($document->file)) {
-            return response()->download(storage_path('app/public/' . $document->file));
-        }
-
-        return redirect()->back()->with('error', 'File không tồn tại.');
+        return redirect()->route('documents.index')
+            ->with('success', 'Tài liệu đã được upload thành công.');
     }
 
     /**
-     * Hiển thị form chỉnh sửa tài liệu
+     * Download document
+     */
+    public function download($id)
+    {
+        $response = $this->documentService->downloadDocument($id);
+        if (!$response) {
+            return redirect()->back()->with('error', 'File không tồn tại.');
+        }
+        return $response;
+    }
+
+    /**
+     * Show the form for editing document
      */
     public function edit($id)
     {
-        $document = Document::findOrFail($id);
+        $document = $this->documentService->getDocumentById($id);
         return view('documents.edit', compact('document'));
     }
 
     /**
-     * Cập nhật tài liệu
+     * Update document
      */
-    public function update(Request $request, $id)
+    public function update(UpdateDocumentRequest $request, $id)
     {
-        $document = Document::findOrFail($id);
+        $this->documentService->updateDocument(
+            $id,
+            $request->only(['title', 'description']),
+            $request->hasFile('file') ? $request->file('file') : null
+        );
 
-        $request->validate([
-            'title' => 'required|string|max:255|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
-            'description' => 'nullable|string|not_regex:/^\s+$/|regex:/^(?!.*[\r\n]).+$/',
-            'file' => 'nullable|file|mimes:pdf,doc,docx,zip|max:20480'
-        ], [
-            'title.required' => 'Tiêu đề không được để khoảng trắng!',
-            'title.not_regex' => 'Tiêu đề không được chỉ chứa khoảng trắng.',
-            'description.not_regex' => 'Nội dung không được chỉ chứa khoảng trắng.',
-            'file.mimes' => 'Tệp phải có định dạng: pdf, doc hoặc docx.',
-            'file.max'   => 'Kích thước tệp không được vượt quá 20MB.',
-        ]);
-
-        if ($request->hasFile('file')) {
-            // Xóa file cũ nếu có
-            if (Storage::disk('public')->exists($document->file)) {
-                Storage::disk('public')->delete($document->file);
-            }
-
-            // Lưu file mới
-            $filePath = $request->file('file')->store('documents', 'public');
-            $document->file = $filePath;
-        }
-
-        // Cập nhật dữ liệu
-        $document->title = $request->title;
-        $document->description = $request->description;
-        $document->save();
-
-        return redirect()->route('documents.index')->with('success', 'Tài liệu đã được cập nhật thành công.');
+        return redirect()->route('documents.index')
+            ->with('success', 'Tài liệu đã được cập nhật thành công.');
     }
 }

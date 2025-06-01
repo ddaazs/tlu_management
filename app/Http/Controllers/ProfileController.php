@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Services\Core\ProfileService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,17 +12,21 @@ use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
-    public function __construct() {
+    protected $profileService;
+
+    public function __construct(ProfileService $profileService)
+    {
         $this->middleware('auth:web');
+        $this->profileService = $profileService;
     }
+
     /**
      * Display the user's profile form.
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
-        ]);
+        $user = $this->profileService->getUserProfile($request->user()->id);
+        return view('profile.edit', compact('user'));
     }
 
     /**
@@ -29,15 +34,13 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $this->profileService->updateProfile(
+            $request->user()->id,
+            $request->validated()
+        );
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
-        }
-
-        $request->user()->save();
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')
+            ->with('status', 'profile-updated');
     }
 
     /**
@@ -49,12 +52,13 @@ class ProfileController extends Controller
             'password' => ['required', 'current_password'],
         ]);
 
-        $user = $request->user();
+        if (!$this->profileService->validatePassword($request->password)) {
+            return back()->withErrors(['password' => 'Mật khẩu không chính xác']);
+        }
+
+        $this->profileService->deleteProfile($request->user()->id);
 
         Auth::logout();
-
-        $user->delete();
-
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
