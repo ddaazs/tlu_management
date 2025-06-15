@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserUpdateRequest;
 use App\Models\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use App\Services\UserUpdateContext;
+use App\Strategies\User\UpdateBasicInfoStrategy;
+use App\Strategies\User\UpdatePasswordStrategy;
+use Illuminate\Http\RedirectResponse;
 
 class UserController extends Controller
 {
@@ -18,30 +21,6 @@ class UserController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
      * Show the form for editing the specified resource.
      */
     public function edit(User $user)
@@ -52,58 +31,36 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, User $user)
+    public function update(UserUpdateRequest $request, User $user): RedirectResponse
     {
-        $validatedData = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => [
-                'required',
-                'email',
-                'max:255',
-                'unique:users,email,' . $user->id,
-                'regex:/^[a-zA-Z0-9._%+-]+@tlu\.edu\.vn$/',
-            ],
-            'password' => 'nullable|min:6',
-            'role' => 'required|in:quantri,giangvien,sinhvien',
-        ], [
-            'email.regex' => 'Email phải chứa @tlu.edu.vn',
-        ]);
-
-        if ($request->filled('password')) {
-            $validatedData['password'] = Hash::make($validatedData['password']);
+        $validatedData = $request->validated;
+        if (!empty($validatedData['password'])) {
+            $strategy = new UpdatePasswordStrategy();
         } else {
-            $validatedData['password'] = $user->password;
+            $strategy = new UpdateBasicInfoStrategy();
         }
-        
-        if(!$user->update($validatedData)){
+
+        $context = new UserUpdateContext($strategy);
+        $success = $context->execute($validatedData, $user);
+
+        if (!$success) {
             return back()->with('error', 'Update failed');
         }
-        else return redirect()->route('users.index')->with('success', 'Cập nhật tài khoản thành công.');
 
-    
-        // $user->name = $request->name;
-        // $user->email = $request->email; // Tên đăng nhập là email
-    
-
-
-    
-        // $user->role = $request->role;
-        // $user->save();
-
-        // return redirect()->route('users.index')->with('success', 'Cập nhật tài khoản thành công.');
+        return redirect()->route('users.index')->with('success', 'Cập nhật tài khoản thành công.');
     }
-    
+
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user)
+    public function destroy(User $user): RedirectResponse
     {
         $user->ban();
         return redirect()->route('users.index')->with('success', 'Tài khoản đã khóa vĩnh viễn.');
     }
-    
-    public function toggleStatus(User $user)
+
+    public function toggleStatus(User $user): RedirectResponse
     {
         $newStatus = $user->status === 'active' ? 'inactive' : 'active';
         $user->update(['status' => $newStatus]);
