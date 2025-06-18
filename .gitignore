@@ -5,7 +5,7 @@
 /public/storage
 /storage/*.key
 /storage/*
-/storage/debugbar
+/storage/debugbar/*
 /storage/pail
 /vendor
 .env
